@@ -68,7 +68,6 @@ function Configure {
         ('--extra-ldflags=' + "'-APPCONTAINER:NO -MACHINE:${Target}'")
         '--pkg-config=pkg-config'
         $(if ( $Target -eq 'x64' ) { '--target-os=win64' } else { '--target-os=win32' })
-        '--enable-libtheora'
         '--enable-libmp3lame'
         '--enable-w32threads'
         '--enable-version3'
