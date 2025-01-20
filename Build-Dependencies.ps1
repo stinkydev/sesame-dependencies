@@ -2,10 +2,10 @@
 param(
     [ValidateSet('Debug', 'RelWithDebInfo', 'Release', 'MinSizeRel')]
     [string] $Configuration = 'Release',
-    [ValidateSet('dependencies', 'ffmpeg', 'qt')]
+    [ValidateSet('dependencies', 'ffmpeg')]
     [string] $PackageName = 'dependencies',
     [string[]] $Dependencies,
-    [ValidateSet('x86', 'x64')]
+    [ValidateSet('x64')]
     [string] $Target,
     [switch] $Clean,
     [switch] $Quiet,
@@ -139,9 +139,6 @@ function Package-Dependencies {
             }
 
             $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}.zip"
-        }
-        qt {
-            $ArchiveFileName = "windows-deps-qt6-${CurrentDate}-${Target}-${Configuration}.zip"
         }
     }
 

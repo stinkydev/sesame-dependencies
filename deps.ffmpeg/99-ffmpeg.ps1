@@ -68,8 +68,6 @@ function Configure {
         ('--extra-ldflags=' + "'-APPCONTAINER:NO -MACHINE:${Target}'")
         '--pkg-config=pkg-config'
         $(if ( $Target -eq 'x64' ) { '--target-os=win64' } else { '--target-os=win32' })
-        $(if ( $Target -eq 'x64' ) { '--enable-libaom' })
-        $(if ( $Target -eq 'x64' ) { '--enable-libsvtav1' })
         '--enable-libtheora'
         '--enable-libmp3lame'
         '--enable-w32threads'
@@ -79,8 +77,6 @@ function Configure {
         '--enable-libopus'
         '--enable-libvorbis'
         '--enable-libvpx'
-        '--enable-librist'
-        '--enable-libsrt'
         '--enable-shared'
         '--enable-zlib'
         '--disable-static'
@@ -89,6 +85,9 @@ function Configure {
         '--disable-sdl2'
         '--disable-doc'
         '--disable-postproc'
+        '--disable-programs'
+        '--disable-hwaccels'
+        '--disable-amf'
         $(if ( ! $script:Shared ) { ('--pkg-config-flags=' + "'--static'") })
         $(if ( $Configuration -eq 'Debug' ) { '--enable-debug' } else { '--disable-debug' })
         $(if ( $Configuration -eq 'RelWithDebInfo' ) { '--disable-stripping' })
