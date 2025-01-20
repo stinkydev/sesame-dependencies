@@ -1,17 +1,9 @@
 param(
     [string] $Name = 'FFmpeg',
-    [string] $Version = '7.0.2',
+    [string] $Version = '7.1',
     [string] $Uri = 'https://github.com/FFmpeg/FFmpeg.git',
-    [string] $Hash = "e3a61e91030696348b56361bdf80ea358aef4a19",
+    [string] $Hash = "b08d7969c550a804a59511c7b83f2dd8cc0499b8",
     [array] $Patches = @(
-        @{
-            PatchFile = "${PSScriptRoot}/patches/FFmpeg/0001-flvdec-handle-unknown-Windows.patch"
-            HashSum = "72f41d25f709b1566aecaff0204e94af79d91b7845165deb5bf234440962b2fc"
-        }
-        @{
-            PatchFile = "${PSScriptRoot}/patches/FFmpeg/0002-libaomenc-presets-Windows.patch"
-            HashSum = "cec898b957fc289512094fc2c4e6a61d6872f716e4a643fb970c599a453a33f4"
-        }
     ),
     [array] $Targets = @('x64')
 )
