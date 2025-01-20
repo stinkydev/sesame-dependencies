@@ -1,0 +1,205 @@
+name: build_deps
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '20[2-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+    branches:
+      - main
+
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pre-checks:
+    name: Run Pre-Checks
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      seekingTesters: ${{ steps.checks.outputs.seekingTesters }}
+      shortHash: ${{ steps.checks.outputs.shortHash }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for GitHub Labels
+        id: checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          : Check for GitHub Labels
+
+          case "${GITHUB_EVENT_NAME}" in
+            pull_request)
+              if gh pr view ${{ github.event.number }} --json labels \
+                | jq -e -r '.labels[] | select(.name == "Seeking Testers")' > /dev/null; then
+                echo "seekingTesters=true" >> $GITHUB_OUTPUT
+              else
+                echo "seekingTesters=false" >> $GITHUB_OUTPUT
+              fi
+              ;;
+            *)
+              echo "seekingTesters=false" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+          echo "shortHash=${GITHUB_SHA:0:9}" >> $GITHUB_OUTPUT
+  ffmpeg-windows-build:
+    name: Build FFmpeg for Windows
+    runs-on: windows-2022
+    needs: pre-checks
+    strategy:
+      fail-fast: true
+      matrix:
+        target: [x64]
+        include:
+          - target: x64
+            config: Release
+            type: static
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        id: setup
+        run: |
+          # Setup Environment
+
+          $Target='${{ matrix.target }}'
+          $ArtifactName="ffmpeg-windows-${Target}-${{ needs.pre-checks.outputs.shortHash }}"
+          $FileName="windows-ffmpeg-$(Get-Date -Format 'yyyy-MM-dd')-${Target}.zip"
+
+          "artifactName=${ArtifactName}" >> $env:GITHUB_OUTPUT
+          "artifactFileName=${FileName}" >> $env:GITHUB_OUTPUT
+
+      - name: Build FFmpeg
+        uses: ./.github/actions/build-ffmpeg
+        with:
+          target: ${{ matrix.target }}
+          type: ${{ matrix.type }}
+          config: ${{ matrix.config }}
+
+      - name: Publish Build Artifacts
+        if: github.event_name != 'pull_request' || fromJSON(needs.pre-checks.outputs.seekingTesters)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.setup.outputs.artifactName }}
+          path: ${{ github.workspace }}\windows\${{ steps.setup.outputs.artifactFileName }}
+  windows-build:
+    name: Build Windows Dependencies
+    runs-on: windows-2022
+    needs: pre-checks
+    strategy:
+      fail-fast: true
+      matrix:
+        target: [x64]
+        include:
+          - target: x64
+            config: Release
+            type: static
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        id: setup
+        run: |
+          # Setup Environment
+
+          $Target='${{ matrix.target }}'
+          $ArtifactName="deps-windows-${Target}-${{ needs.pre-checks.outputs.shortHash }}"
+          $FileName="windows-deps-$(Get-Date -Format 'yyyy-MM-dd')-${Target}.zip"
+
+          "artifactName=${ArtifactName}" >> $env:GITHUB_OUTPUT
+          "artifactFileName=${FileName}" >> $env:GITHUB_OUTPUT
+
+      - name: Build Windows Dependencies
+        uses: ./.github/actions/build-deps
+        with:
+          target: ${{ matrix.target }}
+          type: ${{ matrix.type }}
+          config: ${{ matrix.config }}
+
+      - name: Publish Build Artifacts
+        if: github.event_name != 'pull_request' || fromJSON(needs.pre-checks.outputs.seekingTesters)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.setup.outputs.artifactName }}
+          path: ${{ github.workspace }}\windows\${{ steps.setup.outputs.artifactFileName }}
+
+  make-release:
+    name: Create and upload release
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    needs: [ffmpeg-windows-build, windows-build]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Get Metadata
+        id: metadata
+        run: |
+          : Get Metadata
+          echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Package Windows dependencies
+        run: |
+          : Package Windows dependencies
+          shopt -s extglob
+          shopt -s nullglob
+
+          for arch in x64; do
+            _temp=$(mktemp -d)
+            pushd "${_temp}" > /dev/null
+
+            for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}.*; do
+              case ${artifact} in
+                *.zip) unzip -o ${artifact} > /dev/null ;;
+                *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
+                *.tar.gz) tar -xzf ${artifact} ;;
+              esac
+            done
+
+            zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
+            mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
+
+            popd > /dev/null
+          done
+
+      - name: Generate Checksums
+        run: |
+          : Generate Checksums
+          shopt -s extglob
+          echo "### Checksums" > ${{ github.workspace }}/CHECKSUMS.txt
+          for file in ${{ github.workspace }}/@(*.tar.xz|*.zip); do
+            echo "    ${file##*/}: $(sha256sum "${file}" | cut -d " " -f 1)" >> ${{ github.workspace }}/CHECKSUMS.txt
+          done
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564
+        with:
+          draft: false
+          prerelease: false
+          tag_name: ${{ steps.metadata.outputs.version }}
+          name: Sesame Dependencies Build ${{ steps.metadata.outputs.version }}
+          body_path: ${{ github.workspace }}/CHECKSUMS.txt
+          files: |
+            ${{ github.workspace }}/windows-*-x64*.zip
