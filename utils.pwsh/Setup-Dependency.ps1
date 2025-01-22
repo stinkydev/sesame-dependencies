@@ -41,29 +41,41 @@ function Setup-Dependency {
         if ( ! ( $script:SkipUnpack ) ) {
             Invoke-GitCheckout  @Params
         }
+    } elseif ( $Uri -match '^local://' ) {
+
+      $File = [System.IO.Path]::GetFileName($Uri)
+      $Path = "../binary-packages/${File}"
+
+      if ( ! ( Test-Path $Path ) ) {
+          throw "File not found: ${Path}"
+      }
+
+      if ( ! ( $script:SkipUnpack -or $script:SkipAll ) ) {
+          Expand-ArchiveExt -Path $Path -DestinationPath $DestinationPath -Force
+      }
     } else {
-        $File = [System.IO.Path]::GetFileName($Uri)
+      $File = [System.IO.Path]::GetFileName($Uri)
 
-        if ( $Hash -eq "") {
-            throw "No checksum file for ${File} supplied."
-        } elseif ( ! ( Test-Path $Hash ) ) {
-            throw "Checksum file for ${File} not found."
-        }
+      if ( $Hash -eq "") {
+          throw "No checksum file for ${File} supplied."
+      } elseif ( ! ( Test-Path $Hash ) ) {
+          throw "Checksum file for ${File} not found."
+      }
 
-        $Params = @{
-            Uri = $Uri
-            HashFile = $Hash
-            Resume = $true
-        }
+      $Params = @{
+          Uri = $Uri
+          HashFile = $Hash
+          Resume = $true
+      }
 
-        if ( Test-Path $File ) {
-            $Params += @{ CheckExisting = $true }
-        }
+      if ( Test-Path $File ) {
+          $Params += @{ CheckExisting = $true }
+      }
 
-        Invoke-SafeWebRequest @Params
+      Invoke-SafeWebRequest @Params
 
-        if ( ! ( $script:SkipUnpack -or $script:SkipAll ) ) {
-            Expand-ArchiveExt -Path $File -DestinationPath $DestinationPath -Force
-        }
-    }
+      if ( ! ( $script:SkipUnpack -or $script:SkipAll ) ) {
+          Expand-ArchiveExt -Path $File -DestinationPath $DestinationPath -Force
+      }
+  }
 }
