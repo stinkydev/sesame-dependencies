@@ -2,7 +2,7 @@ param(
     [string] $Name = 'vulkansdk',
     [string] $Version = '1.3.275.0',
     [string] $Uri = '../vulkan/VulkanSDK-1.3.275.0-components.7z',
-    [string] $Hash = ""
+    [string] $Hash = "19A12C6F07219FB1F6F72304B6D970B5DD7A82AB13F993CEED8A31DFD8361B00"
 )
 
 function Setup {
