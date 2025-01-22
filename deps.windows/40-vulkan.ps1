@@ -1,8 +1,8 @@
 param(
     [string] $Name = 'vulkansdk',
-    [string] $Version = '1.3.216.0',
-    [string] $Uri = 'https://cdn-fastly.obsproject.com/downloads/VulkanSDK-1.3.216.0-Installer-Components.7z',
-    [string] $Hash = "${PSScriptRoot}/checksums/VulkanSDK-1.3.216.0-Installer-Components.7z.sha256"
+    [string] $Version = '1.3.275.0',
+    [string] $Uri = '../vulkan/VulkanSDK-1.3.275.0-components.7z',
+    [string] $Hash = ""
 )
 
 function Setup {
@@ -36,6 +36,12 @@ function Install {
             Path = "lib$(if ( $Target -eq "x86" ) { "32" })/vulkan-1.lib"
             Destination = "$($ConfigData.OutputPath)/lib"
             ErrorAction = 'SilentlyContinue'
+        }
+        @{
+          Path = "bin"
+          Destination = "$($ConfigData.OutputPath)/bin"
+          Recurse = $true
+          ErrorAction = 'SilentlyContinue'
         }
     )
 
