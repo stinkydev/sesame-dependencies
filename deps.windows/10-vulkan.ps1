@@ -33,6 +33,18 @@ function Install {
             ErrorAction = 'SilentlyContinue'
         }
         @{
+          Path = "include/vk_video"
+          Destination = "$($ConfigData.OutputPath)/include"
+          Recurse = $true
+          ErrorAction = 'SilentlyContinue'
+        }
+        @{
+          Path = "include/vma"
+          Destination = "$($ConfigData.OutputPath)/include"
+          Recurse = $true
+          ErrorAction = 'SilentlyContinue'
+        }
+        @{
             Path = "lib$(if ( $Target -eq "x86" ) { "32" })/vulkan-1.lib"
             Destination = "$($ConfigData.OutputPath)/lib"
             ErrorAction = 'SilentlyContinue'
