@@ -138,7 +138,7 @@ function Package-Dependencies {
                 Get-ChildItem ./share/cmake -Exclude 'nlohmann_json*' | Remove-Item -Recurse
             }
 
-            $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}.zip"
+            $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}-${Configuration}.zip"
         }
     }
 

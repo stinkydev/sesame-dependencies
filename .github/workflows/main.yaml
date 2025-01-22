@@ -104,10 +104,9 @@ jobs:
       fail-fast: true
       matrix:
         target: [x64]
+        config: [Release, Debug]
         include:
-          - target: x64
-            config: Release
-            type: static
+          - type: static
     defaults:
       run:
         shell: pwsh
