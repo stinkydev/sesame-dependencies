@@ -120,8 +120,9 @@ jobs:
           # Setup Environment
 
           $Target='${{ matrix.target }}'
-          $ArtifactName="deps-windows-${Target}-${{ needs.pre-checks.outputs.shortHash }}"
-          $FileName="windows-deps-$(Get-Date -Format 'yyyy-MM-dd')-${Target}.zip"
+          $Config='${{ matrix.config }}'
+          $ArtifactName="deps-windows-${Target}-${Config}${{ needs.pre-checks.outputs.shortHash }}"
+          $FileName="windows-deps-$(Get-Date -Format 'yyyy-MM-dd')-${Target}-${Config}.zip"
 
           "artifactName=${ArtifactName}" >> $env:GITHUB_OUTPUT
           "artifactFileName=${FileName}" >> $env:GITHUB_OUTPUT
@@ -165,21 +166,23 @@ jobs:
           shopt -s nullglob
 
           for arch in x64; do
-            _temp=$(mktemp -d)
-            pushd "${_temp}" > /dev/null
+            for config in Release Debug; do
+              _temp=$(mktemp -d)
+              pushd "${_temp}" > /dev/null
 
-            for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}.*; do
-              case ${artifact} in
-                *.zip) unzip -o ${artifact} > /dev/null ;;
-                *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
-                *.tar.gz) tar -xzf ${artifact} ;;
-              esac
+              for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}-$(config).*; do
+                case ${artifact} in
+                  *.zip) unzip -o ${artifact} > /dev/null ;;
+                  *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
+                  *.tar.gz) tar -xzf ${artifact} ;;
+                esac
+              done
+
+              zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip -- *
+              mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip ${GITHUB_WORKSPACE}
+
+              popd > /dev/null
             done
-
-            zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
-            mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
-
-            popd > /dev/null
           done
 
       - name: Generate Checksums
