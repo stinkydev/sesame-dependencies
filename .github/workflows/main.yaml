@@ -162,7 +162,7 @@ jobs:
       - name: Display files
         run: |
           : Display files
-          ls -l ${{ github.workspace }}  
+          ls -R
 
       - name: Package Windows dependencies
         run: |
