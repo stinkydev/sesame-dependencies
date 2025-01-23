@@ -65,6 +65,9 @@ function Build {
 
 function Install {
     Log-Information "Install (${Target})"
+    if (-not ($Path -like '*\cmake')) {
+      $Path = Join-Path -Path $Path -ChildPath 'cmake'
+    }
     Set-Location $Path
 
     $Options = @(

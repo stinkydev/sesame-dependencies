@@ -47,11 +47,6 @@ runs:
           !${{ inputs.workingDirectory }}/*_build_temp/*.zip
         key: ${{ inputs.target }}-deps-${{ inputs.type }}-${{ inputs.config }}-${{ steps.env-setup.outputs.hash }}
 
-    - name: list files
-      shell: bash
-      run: |
-        ls -la ${{ inputs.workingDirectory }}/*_build_temp/    
-
     - name: Build and Install Dependencies
       if: runner.os == 'Windows'
       shell: pwsh
