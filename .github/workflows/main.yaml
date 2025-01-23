@@ -170,12 +170,14 @@ jobs:
           shopt -s extglob
           shopt -s nullglob
 
-          for arch in x64; do
-            for config in Release Debug; do
-              _temp=$(mktemp -d)
-              pushd "${_temp}" > /dev/null
+          arch=x64
 
-              for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}-$(config).*; do
+          for config in Release Debug; do
+            _temp=$(mktemp -d)
+            pushd "${_temp}" > /dev/null
+
+            for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)*.*; do
+              if [[ ${artifact} == *ffmpeg* || ${artifact} == *${config}* ]]; then
                 echo "Extracting ${artifact}"
                 case ${artifact} in
                   *.zip) unzip -o ${artifact} > /dev/null ;;
@@ -183,12 +185,12 @@ jobs:
                   *.tar.gz) tar -xzf ${artifact} ;;
                 esac
               done
+            fi
 
-              zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip -- *
-              mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip ${GITHUB_WORKSPACE}
+            zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip -- *
+            mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip ${GITHUB_WORKSPACE}
 
-              popd > /dev/null
-            done
+            popd > /dev/null
           done
 
       - name: Generate Checksums
