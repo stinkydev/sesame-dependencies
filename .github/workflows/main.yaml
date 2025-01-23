@@ -159,6 +159,11 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
+      - name: Display files
+        run: |
+          : Display files
+          ls -l ${{ github.workspace }}  
+
       - name: Package Windows dependencies
         run: |
           : Package Windows dependencies
@@ -171,6 +176,7 @@ jobs:
               pushd "${_temp}" > /dev/null
 
               for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}-$(config).*; do
+                echo "Extracting ${artifact}"
                 case ${artifact} in
                   *.zip) unzip -o ${artifact} > /dev/null ;;
                   *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
