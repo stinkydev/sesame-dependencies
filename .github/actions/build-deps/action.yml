@@ -48,6 +48,7 @@ runs:
         key: ${{ inputs.target }}-deps-${{ inputs.type }}-${{ inputs.config }}-${{ steps.env-setup.outputs.hash }}
 
     - name: list files
+      shell: bash
       run: |
         ls -la ${{ inputs.workingDirectory }}/*_build_temp/    
 
