@@ -132,10 +132,10 @@ function Package-Dependencies {
         }
         dependencies {
             if ( $script:Target -ne 'x86' ) {
-                Get-ChildItem ./cmake/pcre2*,./lib/pcre2* | Remove-Item
-                Remove-Item -Recurse ./lib/pkgconfig
-                Get-ChildItem ./share -Exclude 'cmake' | Remove-Item -Recurse
-                Get-ChildItem ./share/cmake -Exclude 'nlohmann_json*' | Remove-Item -Recurse
+#                Get-ChildItem ./cmake/pcre2*,./lib/pcre2* | Remove-Item
+#                Remove-Item -Recurse ./lib/pkgconfig
+#                Get-ChildItem ./share -Exclude 'cmake' | Remove-Item -Recurse
+#                Get-ChildItem ./share/cmake -Exclude 'nlohmann_json*' | Remove-Item -Recurse
             }
 
             $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}.zip"
