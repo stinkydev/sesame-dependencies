@@ -10,7 +10,7 @@ function Setup-Target {
         UnixArch = ('x86', 'x86_64')[$Target64Bit]
         CmakeArch = ('Win32', 'x64')[$Target64Bit]
         Bitness = ('32', '64')[$Target64Bit]
-        OutputPath = "${script:ProjectRoot}\windows\sesame-${script:PackageName}-${script:Target}"
+        OutputPath = "${script:ProjectRoot}\windows\sesame-${script:PackageName}-${script:Target}-${script:Configuration}"
     }
 
     Log-Debug "
