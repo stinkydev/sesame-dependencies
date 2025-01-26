@@ -135,7 +135,7 @@ function Package-Dependencies {
                 Remove-Item -Recurse ./lib/pkgconfig
             }
 
-            $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}.zip"
+            $ArchiveFileName = "windows-deps-${CurrentDate}-${Target}-${Configuration}.zip"
         }
     }
 
