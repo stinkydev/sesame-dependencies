@@ -159,6 +159,9 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
+      - name: Display structure of downloaded files
+        run: ls -R ${{ github.workspace }}
+
       - name: Package Windows dependencies
         run: |
           : Package Windows dependencies
