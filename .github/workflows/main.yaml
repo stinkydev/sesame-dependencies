@@ -174,7 +174,7 @@ jobs:
             _temp=$(mktemp -d)
             pushd "${_temp}" > /dev/null
 
-            for artifact in ${GITHUB_WORKSPACE}/**/*windows-@(deps|ffmpeg)-${arch}*.zip; do
+            for artifact in ${GITHUB_WORKSPACE}/**/*.zip; do
               echo "Processing ${artifact}"
               if [[ ${artifact} == *ffmpeg* || ${artifact} == *${config}* ]]; then
                 echo "Unzipping ${artifact}"
@@ -186,8 +186,8 @@ jobs:
               fi
             done
 
-            zip -r windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip -- *
-            mv windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}-${config}.zip ${GITHUB_WORKSPACE}
+            zip -r windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
+            mv windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
 
             popd > /dev/null
           done
