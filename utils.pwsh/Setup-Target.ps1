@@ -81,6 +81,8 @@ function Setup-BuildParameters {
         }
     }
 
+    Write-Host "Visual Studio ID : $VisualStudioId"
+
     $script:CmakeOptions = @(
         '-A', $script:ConfigData.CmakeArch
         '-G', $VisualStudioId
@@ -88,6 +90,7 @@ function Setup-BuildParameters {
         "-DCMAKE_PREFIX_PATH=$($script:ConfigData.OutputPath)"
         "-DCMAKE_IGNORE_PREFIX_PATH=C:\Strawberry\c"
         "-DCMAKE_BUILD_TYPE=${script:Configuration}"
+        "-DCMAKE_CXX_STANDARD=20"
         '--no-warn-unused-cli'
     )
 
