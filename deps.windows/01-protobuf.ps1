@@ -41,13 +41,13 @@ function Configure {
     } else {
         $Shared = $script:Shared.isPresent
     }
-
+  
     $OnOff = @('OFF', 'ON')
     $Options = @(
         $CmakeOptions
-        "-Dprotobuf_BUILD_SHARED_LIBS:BOOL=$($OnOff[$script:Shared.isPresent])"
+        "-Dprotobuf_BUILD_SHARED_LIBS:BOOL=$($OnOff[$Shared])"
         "-Dprotobuf_BUILD_TESTS:BOOL=OFF"
-        "-Dprotobuf_MSVC_STATIC_RUNTIME:BOOL=OFF"
+        "-Dprotobuf_MSVC_STATIC_RUNTIME:BOOL=$($OnOff[$Shared])"
         "-Dprotobuf_BUILD_PROTOC_BINARIES:BOOL=ON"
     )
 
