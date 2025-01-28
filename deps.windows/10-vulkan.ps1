@@ -51,7 +51,7 @@ function Install {
         }
         @{
           Path = "bin"
-          Destination = "$($ConfigData.OutputPath)/bin"
+          Destination = "$($ConfigData.OutputPath)"
           Recurse = $true
           ErrorAction = 'SilentlyContinue'
         }

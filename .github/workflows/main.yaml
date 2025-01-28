@@ -103,10 +103,9 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target: [x64]
+        config: [Release, Debug]
         include:
           - target: x64
-            config: Release
             type: static
     defaults:
       run:
@@ -121,8 +120,9 @@ jobs:
           # Setup Environment
 
           $Target='${{ matrix.target }}'
-          $ArtifactName="deps-windows-${Target}-${{ needs.pre-checks.outputs.shortHash }}"
-          $FileName="windows-deps-$(Get-Date -Format 'yyyy-MM-dd')-${Target}.zip"
+          $Config='${{ matrix.config }}'
+          $ArtifactName="deps-windows-${Target}-${Config}-${{ needs.pre-checks.outputs.shortHash }}"
+          $FileName="windows-deps-$(Get-Date -Format 'yyyy-MM-dd')-${Target}-${Config}.zip"
 
           "artifactName=${ArtifactName}" >> $env:GITHUB_OUTPUT
           "artifactFileName=${FileName}" >> $env:GITHUB_OUTPUT
@@ -159,26 +159,35 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
+      - name: Display structure of downloaded files
+        run: ls -R ${{ github.workspace }}
+
       - name: Package Windows dependencies
         run: |
           : Package Windows dependencies
           shopt -s extglob
           shopt -s nullglob
+          arch=x64
 
-          for arch in x64; do
+          # make array of configs containing Debug and Release and iterate over them
+          for config in Debug Release; do
             _temp=$(mktemp -d)
             pushd "${_temp}" > /dev/null
 
-            for artifact in ${GITHUB_WORKSPACE}/**/windows-@(deps|ffmpeg)-!(qt6*)-${arch}.*; do
-              case ${artifact} in
-                *.zip) unzip -o ${artifact} > /dev/null ;;
-                *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
-                *.tar.gz) tar -xzf ${artifact} ;;
-              esac
+            for artifact in ${GITHUB_WORKSPACE}/**/*.zip; do
+              echo "Processing ${artifact}"
+              if [[ ${artifact} == *ffmpeg* || ${artifact} == *${config}* ]]; then
+                echo "Unzipping ${artifact}"
+                case ${artifact} in
+                  *.zip) unzip -o ${artifact} > /dev/null ;;
+                  *.tar.xz) XZ_OPT=-T0 tar -xJf ${artifact} ;;
+                  *.tar.gz) tar -xzf ${artifact} ;;
+                esac
+              fi
             done
 
-            zip -r windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
-            mv windows-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
+            zip -r windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
+            mv windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
 
             popd > /dev/null
           done

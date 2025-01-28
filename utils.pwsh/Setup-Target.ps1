@@ -10,7 +10,7 @@ function Setup-Target {
         UnixArch = ('x86', 'x86_64')[$Target64Bit]
         CmakeArch = ('Win32', 'x64')[$Target64Bit]
         Bitness = ('32', '64')[$Target64Bit]
-        OutputPath = "${script:ProjectRoot}\windows\sesame-${script:PackageName}-${script:Target}"
+        OutputPath = "${script:ProjectRoot}\windows\sesame-${script:PackageName}-${script:Target}-${script:Configuration}"
     }
 
     Log-Debug "
@@ -81,13 +81,17 @@ function Setup-BuildParameters {
         }
     }
 
+    Write-Host "Visual Studio ID : $VisualStudioId"
+
     $script:CmakeOptions = @(
         '-A', $script:ConfigData.CmakeArch
         '-G', $VisualStudioId
+        "-DCMAKE_MSVC_TOOLSET_VERSION=143"
         "-DCMAKE_INSTALL_PREFIX=$($script:ConfigData.OutputPath)"
         "-DCMAKE_PREFIX_PATH=$($script:ConfigData.OutputPath)"
         "-DCMAKE_IGNORE_PREFIX_PATH=C:\Strawberry\c"
         "-DCMAKE_BUILD_TYPE=${script:Configuration}"
+        "-DCMAKE_CXX_STANDARD=20"
         '--no-warn-unused-cli'
     )
 
