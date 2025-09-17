@@ -1,8 +1,8 @@
 param(
-    [string] $Name = 'protobuf',
+    [string] $Name = 'moq-cpp',
     [string] $Version = '0.0.1',
     [string] $Uri = 'https://github.com/stinkydev/moq-cpp.git',
-    [string] $Hash = "b5bcf86b514e7462e7ede3ac0995911a7fa4d7b7",
+    [string] $Hash = "26b7adf4f824ef47cb7156f36f06b1a120c58c59",
     [array] $Targets = @('x64'),
     [switch] $ForceShared = $false,
     [array] $Patches = @(
