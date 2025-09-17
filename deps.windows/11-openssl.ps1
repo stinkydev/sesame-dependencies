@@ -1,6 +1,6 @@
 param(
-    [string] $Name = 'vulkansdk',
-    [string] $Version = '1.3.275.0',
+    [string] $Name = 'openssl',
+    [string] $Version = '1.1.1',
     [string] $Uri = 'local://openssl-1.1.1w.zip',
     [string] $Hash = ""
 )
