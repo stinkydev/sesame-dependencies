@@ -1,8 +1,8 @@
 param(
     [string] $Name = 'moq-cpp',
-    [string] $Version = '0.0.1',
+    [string] $Version = '0.1.1',
     [string] $Uri = 'https://github.com/stinkydev/moq-cpp.git',
-    [string] $Hash = "26b7adf4f824ef47cb7156f36f06b1a120c58c59",
+    [string] $Hash = "9b45d9c717c0971dc8cdb9b3705648542ccdeca8",
     [array] $Targets = @('x64'),
     [switch] $ForceShared = $false,
     [array] $Patches = @(
