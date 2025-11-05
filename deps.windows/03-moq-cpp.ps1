@@ -1,8 +1,8 @@
 param(
     [string] $Name = 'moq-cpp',
-    [string] $Version = '0.1.3',
+    [string] $Version = 'v0.0.3',
     [string] $Uri = 'https://github.com/stinkydev/moq-cpp.git',
-    [string] $Hash = "e7423a5d4e0ca9eaed6aa262d367c1619223b85f",
+    [string] $Hash = "34ec530ee13bb29545b0a9090a508f34e2d42ae4",
     [array] $Targets = @('x64'),
     [switch] $ForceShared = $false,
     [array] $Patches = @(
@@ -10,7 +10,7 @@ param(
 )
 
 function Setup {
-  Setup-Dependency -Uri $Uri -Hash $Hash -DestinationPath $Path
+  Setup-Dependency -Uri $Uri -Hash $Hash -DestinationPath $Path -Branch "main"
 }
 
 function Clean {
