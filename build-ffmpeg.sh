@@ -49,11 +49,13 @@ echo "[INFO] Required system packages:"
 echo "  - nasm, yasm (assemblers)"
 echo "  - libx264-dev, libx265-dev, libvpx-dev (video codecs)"
 echo "  - libmp3lame-dev, libopus-dev, libvorbis-dev (audio codecs)"
-echo "  - libaom-dev, libsvtav1-dev (AV1 support)"
+echo "  - libaom-dev (AV1 support, optional: libsvtav1-dev)"
 echo ""
 echo "[INFO] To install on Ubuntu/Debian:"
 echo "  sudo apt-get install -y nasm yasm libx264-dev libx265-dev libvpx-dev \\"
 echo "    libmp3lame-dev libopus-dev libvorbis-dev libaom-dev pkg-config"
+echo ""
+echo "[INFO] Optional: sudo apt-get install -y libsvtav1-dev"
 echo ""
 
 # Check for required tools
@@ -64,10 +66,9 @@ command -v nasm >/dev/null 2>&1 || { echo "[ERROR] nasm is required (sudo apt-ge
 cd "${WORK_ROOT}"
 if [[ ! -d "FFmpeg" ]]; then
     echo "[INFO] Cloning FFmpeg..."
-    git clone --depth=1 https://github.com/FFmpeg/FFmpeg.git
+    # Clone full repository to ensure we can checkout any commit
+    git clone https://github.com/FFmpeg/FFmpeg.git
     cd FFmpeg
-    # Fetch the specific commit and checkout
-    git fetch --unshallow
     git checkout "${FFMPEG_HASH}"
 else
     echo "[INFO] FFmpeg already cloned"
