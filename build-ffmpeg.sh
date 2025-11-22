@@ -64,8 +64,9 @@ command -v nasm >/dev/null 2>&1 || { echo "[ERROR] nasm is required (sudo apt-ge
 cd "${WORK_ROOT}"
 if [[ ! -d "FFmpeg" ]]; then
     echo "[INFO] Cloning FFmpeg..."
-    git clone https://github.com/FFmpeg/FFmpeg.git
+    git clone --depth=1 https://github.com/FFmpeg/FFmpeg.git
     cd FFmpeg
+    git fetch --depth=1 origin "${FFMPEG_HASH}"
     git checkout "${FFMPEG_HASH}"
 else
     echo "[INFO] FFmpeg already cloned"
@@ -74,6 +75,24 @@ fi
 
 # Configure FFmpeg
 echo "[INFO] Configuring FFmpeg..."
+
+# Determine compiler
+CC_FLAGS=""
+CXX_FLAGS=""
+if command -v clang >/dev/null 2>&1; then
+    CC_FLAGS="--cc=clang --cxx=clang++"
+fi
+
+# Check for optional codec support
+AOM_FLAGS=""
+SVTAV1_FLAGS=""
+if pkg-config --exists libaom; then
+    AOM_FLAGS="--enable-libaom"
+fi
+if pkg-config --exists SvtAv1Enc; then
+    SVTAV1_FLAGS="--enable-libsvtav1"
+fi
+
 ./configure \
     --prefix="${OUTPUT_PATH}" \
     --arch="${ARCH}" \
@@ -89,9 +108,9 @@ echo "[INFO] Configuring FFmpeg..."
     --enable-libopus \
     --enable-libvorbis \
     --extra-libs="-lpthread -lm" \
-    $(if command -v clang >/dev/null 2>&1; then echo "--cc=clang --cxx=clang++"; fi) \
-    $(pkg-config --exists libaom && echo "--enable-libaom" || true) \
-    $(pkg-config --exists SvtAv1Enc && echo "--enable-libsvtav1" || true)
+    ${CC_FLAGS} \
+    ${AOM_FLAGS} \
+    ${SVTAV1_FLAGS}
 
 # Build FFmpeg
 echo "[INFO] Building FFmpeg (this may take a while)..."
