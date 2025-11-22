@@ -204,11 +204,71 @@ jobs:
           name: ${{ steps.setup.outputs.artifactName }}
           path: ${{ github.workspace }}/${{ steps.setup.outputs.artifactFileName }}
 
+  ffmpeg-linux-build:
+    name: Build FFmpeg for Linux
+    runs-on: ubuntu-22.04
+    needs: pre-checks
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install FFmpeg Build Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            build-essential \
+            nasm \
+            yasm \
+            pkg-config \
+            libx264-dev \
+            libx265-dev \
+            libvpx-dev \
+            libmp3lame-dev \
+            libopus-dev \
+            libvorbis-dev \
+            libaom-dev \
+            git
+
+      - name: Setup Environment
+        id: setup
+        run: |
+          # Setup Environment
+
+          TARGET="x86_64"
+          ARTIFACT_NAME="ffmpeg-linux-${TARGET}-${{ needs.pre-checks.outputs.shortHash }}"
+          FILE_NAME="linux-ffmpeg-$(date +%Y-%m-%d)-${TARGET}.tar.gz"
+
+          echo "artifactName=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "artifactFileName=${FILE_NAME}" >> $GITHUB_OUTPUT
+          echo "target=${TARGET}" >> $GITHUB_OUTPUT
+
+      - name: Build FFmpeg
+        run: |
+          # Build FFmpeg
+
+          export TARGET="${{ steps.setup.outputs.target }}"
+          export CONFIGURATION="Release"
+          
+          chmod +x ./build-ffmpeg.sh
+          ./build-ffmpeg.sh
+
+      - name: Publish Build Artifacts
+        if: github.event_name != 'pull_request' || fromJSON(needs.pre-checks.outputs.seekingTesters)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.setup.outputs.artifactName }}
+          path: ${{ github.workspace }}/${{ steps.setup.outputs.artifactFileName }}
+
   make-release:
     name: Create and upload release
     runs-on: ubuntu-22.04
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-    needs: [ffmpeg-windows-build, windows-build, linux-build]
+    needs: [ffmpeg-windows-build, windows-build, linux-build, ffmpeg-linux-build]
     permissions:
       contents: write
     defaults:

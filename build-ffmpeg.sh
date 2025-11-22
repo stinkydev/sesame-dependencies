@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# Build FFmpeg for Linux
+# Simplified approach: use system packages for dependencies, build FFmpeg from source
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${SCRIPT_DIR}"
+WORK_ROOT="${PROJECT_ROOT}/linux_build_temp"
+CURRENT_DATE=$(date +%Y-%m-%d)
+
+# Configuration
+CONFIGURATION="${CONFIGURATION:-Release}"
+TARGET="${TARGET:-$(uname -m)}"
+FFMPEG_VERSION="${FFMPEG_VERSION:-7.0.2}"
+FFMPEG_HASH="e3a61e91030696348b56361bdf80ea358aef4a19"
+
+# Determine architecture
+case "${TARGET}" in
+    x86_64)
+        ARCH="x86_64"
+        ;;
+    aarch64|arm64)
+        ARCH="aarch64"
+        ;;
+    *)
+        echo "Unsupported target: ${TARGET}"
+        exit 1
+        ;;
+esac
+
+OUTPUT_PATH="${PROJECT_ROOT}/linux/sesame-ffmpeg-${TARGET}"
+
+echo "---------------------------------------------------------------------------------------------------"
+echo "[SESAME-FFMPEG] Building FFmpeg for Linux"
+echo "Configuration: ${CONFIGURATION}"
+echo "Target: ${TARGET}"
+echo "Output: ${OUTPUT_PATH}"
+echo "---------------------------------------------------------------------------------------------------"
+
+# Create directories
+mkdir -p "${WORK_ROOT}"
+mkdir -p "${OUTPUT_PATH}"
+
+# Install system dependencies
+echo "[INFO] Installing FFmpeg build dependencies..."
+echo "[INFO] Required system packages:"
+echo "  - nasm, yasm (assemblers)"
+echo "  - libx264-dev, libx265-dev, libvpx-dev (video codecs)"
+echo "  - libmp3lame-dev, libopus-dev, libvorbis-dev (audio codecs)"
+echo "  - libaom-dev, libsvtav1-dev (AV1 support)"
+echo ""
+echo "[INFO] To install on Ubuntu/Debian:"
+echo "  sudo apt-get install -y nasm yasm libx264-dev libx265-dev libvpx-dev \\"
+echo "    libmp3lame-dev libopus-dev libvorbis-dev libaom-dev pkg-config"
+echo ""
+
+# Check for required tools
+command -v pkg-config >/dev/null 2>&1 || { echo "[ERROR] pkg-config is required"; exit 1; }
+command -v nasm >/dev/null 2>&1 || { echo "[ERROR] nasm is required (sudo apt-get install nasm)"; exit 1; }
+
+# Clone FFmpeg
+cd "${WORK_ROOT}"
+if [[ ! -d "FFmpeg" ]]; then
+    echo "[INFO] Cloning FFmpeg..."
+    git clone https://github.com/FFmpeg/FFmpeg.git
+    cd FFmpeg
+    git checkout "${FFMPEG_HASH}"
+else
+    echo "[INFO] FFmpeg already cloned"
+    cd FFmpeg
+fi
+
+# Configure FFmpeg
+echo "[INFO] Configuring FFmpeg..."
+./configure \
+    --prefix="${OUTPUT_PATH}" \
+    --arch="${ARCH}" \
+    --enable-gpl \
+    --enable-version3 \
+    --enable-shared \
+    --disable-static \
+    --enable-pthreads \
+    --enable-libx264 \
+    --enable-libx265 \
+    --enable-libvpx \
+    --enable-libmp3lame \
+    --enable-libopus \
+    --enable-libvorbis \
+    --extra-libs="-lpthread -lm" \
+    $(if command -v clang >/dev/null 2>&1; then echo "--cc=clang --cxx=clang++"; fi) \
+    $(pkg-config --exists libaom && echo "--enable-libaom" || true) \
+    $(pkg-config --exists SvtAv1Enc && echo "--enable-libsvtav1" || true)
+
+# Build FFmpeg
+echo "[INFO] Building FFmpeg (this may take a while)..."
+make -j$(nproc)
+
+# Install FFmpeg
+echo "[INFO] Installing FFmpeg..."
+make install
+
+# Create version file
+mkdir -p "${OUTPUT_PATH}/share/sesame-deps"
+echo "${CURRENT_DATE}" > "${OUTPUT_PATH}/share/sesame-deps/VERSION"
+
+# Package FFmpeg
+cd "${OUTPUT_PATH}"
+ARCHIVE_NAME="linux-ffmpeg-${CURRENT_DATE}-${TARGET}.tar.gz"
+echo "[INFO] Creating archive ${ARCHIVE_NAME}..."
+tar -czf "${ARCHIVE_NAME}" ./*
+mv "${ARCHIVE_NAME}" "${PROJECT_ROOT}/"
+
+echo "---------------------------------------------------------------------------------------------------"
+echo "[SESAME-FFMPEG] Build complete!"
+echo "Archive: ${PROJECT_ROOT}/${ARCHIVE_NAME}"
+echo "---------------------------------------------------------------------------------------------------"
