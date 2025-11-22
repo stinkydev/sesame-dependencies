@@ -141,11 +141,72 @@ jobs:
           name: ${{ steps.setup.outputs.artifactName }}
           path: ${{ github.workspace }}\windows\${{ steps.setup.outputs.artifactFileName }}
 
+  linux-build:
+    name: Build Linux Dependencies
+    runs-on: ubuntu-22.04
+    needs: pre-checks
+    strategy:
+      fail-fast: true
+      matrix:
+        config: [Release, Debug]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Build Dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            build-essential \
+            cmake \
+            ninja-build \
+            pkg-config \
+            autoconf \
+            automake \
+            libtool \
+            curl \
+            git
+
+      - name: Setup Environment
+        id: setup
+        run: |
+          # Setup Environment
+
+          TARGET="x86_64"
+          CONFIG="${{ matrix.config }}"
+          ARTIFACT_NAME="deps-linux-${TARGET}-${CONFIG}-${{ needs.pre-checks.outputs.shortHash }}"
+          FILE_NAME="linux-deps-$(date +%Y-%m-%d)-${TARGET}-${CONFIG}.tar.gz"
+
+          echo "artifactName=${ARTIFACT_NAME}" >> $GITHUB_OUTPUT
+          echo "artifactFileName=${FILE_NAME}" >> $GITHUB_OUTPUT
+          echo "target=${TARGET}" >> $GITHUB_OUTPUT
+          echo "config=${CONFIG}" >> $GITHUB_OUTPUT
+
+      - name: Build Linux Dependencies
+        run: |
+          # Build Linux Dependencies
+
+          export CONFIGURATION="${{ steps.setup.outputs.config }}"
+          export TARGET="${{ steps.setup.outputs.target }}"
+          
+          chmod +x ./build-dependencies.sh
+          ./build-dependencies.sh
+
+      - name: Publish Build Artifacts
+        if: github.event_name != 'pull_request' || fromJSON(needs.pre-checks.outputs.seekingTesters)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.setup.outputs.artifactName }}
+          path: ${{ github.workspace }}/${{ steps.setup.outputs.artifactFileName }}
+
   make-release:
     name: Create and upload release
     runs-on: ubuntu-22.04
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-    needs: [ffmpeg-windows-build, windows-build]
+    needs: [ffmpeg-windows-build, windows-build, linux-build]
     defaults:
       run:
         shell: bash
@@ -192,12 +253,26 @@ jobs:
             popd > /dev/null
           done
 
+      - name: Package Linux dependencies
+        run: |
+          : Package Linux dependencies
+          shopt -s extglob
+          shopt -s nullglob
+          
+          # Copy Linux artifacts to workspace
+          for artifact in ${GITHUB_WORKSPACE}/**/linux-*.tar.gz; do
+            if [[ -f "${artifact}" ]]; then
+              echo "Found Linux artifact: ${artifact}"
+              cp "${artifact}" ${GITHUB_WORKSPACE}/
+            fi
+          done
+
       - name: Generate Checksums
         run: |
           : Generate Checksums
           shopt -s extglob
           echo "### Checksums" > ${{ github.workspace }}/CHECKSUMS.txt
-          for file in ${{ github.workspace }}/@(*.tar.xz|*.zip); do
+          for file in ${{ github.workspace }}/@(*.tar.xz|*.tar.gz|*.zip); do
             echo "    ${file##*/}: $(sha256sum "${file}" | cut -d " " -f 1)" >> ${{ github.workspace }}/CHECKSUMS.txt
           done
 
@@ -212,3 +287,4 @@ jobs:
           body_path: ${{ github.workspace }}/CHECKSUMS.txt
           files: |
             ${{ github.workspace }}/windows-*-x64*.zip
+            ${{ github.workspace }}/linux-*.tar.gz
