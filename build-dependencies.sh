@@ -245,9 +245,7 @@ if [[ -z "${DEPENDENCIES}" ]] && [[ -d "${OUTPUT_PATH}" ]]; then
     # Cleanup unnecessary files
     case "${PACKAGE_NAME}" in
         dependencies)
-            if [[ "${TARGET}" != "x86" ]]; then
-                rm -rf lib/pkgconfig 2>/dev/null || true
-            fi
+            rm -rf lib/pkgconfig 2>/dev/null || true
             ARCHIVE_NAME="linux-deps-${CURRENT_DATE}-${TARGET}-${CONFIGURATION}.tar.gz"
             ;;
         *)

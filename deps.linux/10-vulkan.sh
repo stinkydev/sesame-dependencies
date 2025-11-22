@@ -42,9 +42,14 @@ install() {
         mkdir -p "${OUTPUT_PATH}/lib/pkgconfig"
         mkdir -p "${OUTPUT_PATH}/include"
         
-        # Copy pkg-config file
-        local pc_path=$(pkg-config --variable=pcfiledir vulkan)
-        cp "${pc_path}/vulkan.pc" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
+        # Copy pkg-config file with error handling
+        if command -v pkg-config >/dev/null 2>&1; then
+            local pc_path=$(pkg-config --variable=pcfiledir vulkan 2>/dev/null) || pc_path="/usr/lib/pkgconfig"
+            
+            if [[ -f "${pc_path}/vulkan.pc" ]]; then
+                cp "${pc_path}/vulkan.pc" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
+            fi
+        fi
         
         log_info "System Vulkan SDK linked"
     else

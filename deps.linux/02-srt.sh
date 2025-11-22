@@ -31,7 +31,7 @@ configure() {
     log_info "Configure ${NAME} (${TARGET})"
     cd "${WORK_ROOT}/${NAME}-${VERSION}"
     
-    local shared_libs="ON"
+    local shared_libs="OFF"
     if [[ "${SHARED}" == "true" ]]; then
         shared_libs="ON"
     fi

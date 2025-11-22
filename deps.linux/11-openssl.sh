@@ -73,11 +73,16 @@ install() {
         mkdir -p "${OUTPUT_PATH}/lib/pkgconfig"
         mkdir -p "${OUTPUT_PATH}/include"
         
-        # Copy pkg-config file
-        local pc_path=$(pkg-config --variable=pcfiledir openssl)
-        cp "${pc_path}/openssl.pc" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
-        cp "${pc_path}/libssl.pc" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
-        cp "${pc_path}/libcrypto.pc" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
+        # Copy pkg-config files with error handling
+        if command -v pkg-config >/dev/null 2>&1; then
+            local pc_path=$(pkg-config --variable=pcfiledir openssl 2>/dev/null) || pc_path="/usr/lib/pkgconfig"
+            
+            for pc_file in openssl.pc libssl.pc libcrypto.pc; do
+                if [[ -f "${pc_path}/${pc_file}" ]]; then
+                    cp "${pc_path}/${pc_file}" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
+                fi
+            done
+        fi
         
         return 0
     fi
