@@ -66,7 +66,8 @@ if [[ ! -d "FFmpeg" ]]; then
     echo "[INFO] Cloning FFmpeg..."
     git clone --depth=1 https://github.com/FFmpeg/FFmpeg.git
     cd FFmpeg
-    git fetch --depth=1 origin "${FFMPEG_HASH}"
+    # Fetch the specific commit and checkout
+    git fetch --unshallow
     git checkout "${FFMPEG_HASH}"
 else
     echo "[INFO] FFmpeg already cloned"
@@ -77,10 +78,9 @@ fi
 echo "[INFO] Configuring FFmpeg..."
 
 # Determine compiler
-CC_FLAGS=""
-CXX_FLAGS=""
+CC_CXX_FLAGS=""
 if command -v clang >/dev/null 2>&1; then
-    CC_FLAGS="--cc=clang --cxx=clang++"
+    CC_CXX_FLAGS="--cc=clang --cxx=clang++"
 fi
 
 # Check for optional codec support
@@ -108,7 +108,7 @@ fi
     --enable-libopus \
     --enable-libvorbis \
     --extra-libs="-lpthread -lm" \
-    ${CC_FLAGS} \
+    ${CC_CXX_FLAGS} \
     ${AOM_FLAGS} \
     ${SVTAV1_FLAGS}
 
