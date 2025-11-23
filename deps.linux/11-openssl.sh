@@ -6,6 +6,7 @@ VERSION='1.1.1w'
 URI='https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz'
 HASH="${SCRIPT_DIR}/deps.linux/checksums/OpenSSL_1_1_1w.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')
+# Note: GitHub archive extracts to 'openssl-OpenSSL_1_1_1w' (not 'openssl-1.1.1w')
 EXTRACTED_DIR='openssl-OpenSSL_1_1_1w'
 
 setup() {
