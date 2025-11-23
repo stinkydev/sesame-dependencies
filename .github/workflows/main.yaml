@@ -322,13 +322,36 @@ jobs:
           : Package Linux dependencies
           shopt -s extglob
           shopt -s nullglob
+          arch=x86_64
           
-          # Copy Linux artifacts to workspace
-          for artifact in ${GITHUB_WORKSPACE}/**/linux-*.tar.gz; do
-            if [[ -f "${artifact}" ]]; then
-              echo "Found Linux artifact: ${artifact}"
-              cp "${artifact}" ${GITHUB_WORKSPACE}/
+          # Package Debug and Release configurations
+          for config in Debug Release; do
+            _temp=$(mktemp -d)
+            pushd "${_temp}" > /dev/null
+            
+            # Extract dependency archives for this configuration
+            for artifact in ${GITHUB_WORKSPACE}/**/*-${config}.tar.gz; do
+              if [[ -f "${artifact}" ]]; then
+                echo "Extracting ${artifact}"
+                tar -xzf "${artifact}"
+              fi
+            done
+            
+            # Extract FFmpeg archive (Release only, shared between configs)
+            if [[ "${config}" == "Release" ]]; then
+              for artifact in ${GITHUB_WORKSPACE}/**/linux-ffmpeg-*.tar.gz; do
+                if [[ -f "${artifact}" ]]; then
+                  echo "Extracting FFmpeg ${artifact}"
+                  tar -xzf "${artifact}"
+                fi
+              done
             fi
+            
+            # Create combined archive
+            tar -czf linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz -- *
+            mv linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz ${GITHUB_WORKSPACE}
+            
+            popd > /dev/null
           done
 
       - name: Generate Checksums
