@@ -2,27 +2,20 @@
 
 # Dependency information
 NAME='openssl'
-VERSION='3.3.2'
-URI='https://github.com/openssl/openssl/archive/refs/tags/openssl-3.3.2.tar.gz'
-HASH="${SCRIPT_DIR}/deps.linux/checksums/openssl-3.3.2.tar.gz.sha256"
+VERSION='1.1.1w'
+URI='https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz'
+HASH="${SCRIPT_DIR}/deps.linux/checksums/OpenSSL_1_1_1w.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
     log_info "Setup ${NAME} (${TARGET})"
     cd "${WORK_ROOT}"
-    
-    # Check if system OpenSSL is available and sufficient
-    if pkg-config --exists openssl && pkg-config --atleast-version=1.1.1 openssl; then
-        log_info "Using system OpenSSL ($(pkg-config --modversion openssl))"
-        return 0
-    fi
-    
     setup_dependency "${URI}" "${HASH}" "${WORK_ROOT}"
 }
 
 clean() {
-    if [[ -d "${WORK_ROOT}/openssl-openssl-${VERSION}" ]]; then
-        cd "${WORK_ROOT}/openssl-openssl-${VERSION}"
+    if [[ -d "${WORK_ROOT}/openssl-OpenSSL_1_1_1w" ]]; then
+        cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
         
         if [[ -f "Makefile" ]]; then
             log_info "Clean build directory (${TARGET})"
@@ -36,13 +29,8 @@ patch() {
 }
 
 configure() {
-    # Skip if using system OpenSSL
-    if pkg-config --exists openssl && pkg-config --atleast-version=1.1.1 openssl; then
-        return 0
-    fi
-    
     log_info "Configure ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-openssl-${VERSION}"
+    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
     
     local options=(
         "--prefix=${OUTPUT_PATH}"
@@ -55,40 +43,15 @@ configure() {
 }
 
 build() {
-    # Skip if using system OpenSSL
-    if pkg-config --exists openssl && pkg-config --atleast-version=1.1.1 openssl; then
-        return 0
-    fi
-    
     log_info "Build ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-openssl-${VERSION}"
+    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
     
     make -j "${NUM_PROCS}"
 }
 
 install() {
-    # If using system OpenSSL, create symlinks
-    if pkg-config --exists openssl && pkg-config --atleast-version=1.1.1 openssl; then
-        log_info "Install ${NAME} (system) (${TARGET})"
-        mkdir -p "${OUTPUT_PATH}/lib/pkgconfig"
-        mkdir -p "${OUTPUT_PATH}/include"
-        
-        # Copy pkg-config files with error handling
-        if command -v pkg-config >/dev/null 2>&1; then
-            local pc_path=$(pkg-config --variable=pcfiledir openssl 2>/dev/null) || pc_path="/usr/lib/pkgconfig"
-            
-            for pc_file in openssl.pc libssl.pc libcrypto.pc; do
-                if [[ -f "${pc_path}/${pc_file}" ]]; then
-                    cp "${pc_path}/${pc_file}" "${OUTPUT_PATH}/lib/pkgconfig/" 2>/dev/null || true
-                fi
-            done
-        fi
-        
-        return 0
-    fi
-    
     log_info "Install ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-openssl-${VERSION}"
+    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
     
     make install_sw
 }
