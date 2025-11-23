@@ -337,15 +337,13 @@ jobs:
               fi
             done
             
-            # Extract FFmpeg archive (Release only, shared between configs)
-            if [[ "${config}" == "Release" ]]; then
-              for artifact in ${GITHUB_WORKSPACE}/**/linux-ffmpeg-*.tar.gz; do
-                if [[ -f "${artifact}" ]]; then
-                  echo "Extracting FFmpeg ${artifact}"
-                  tar -xzf "${artifact}"
-                fi
-              done
-            fi
+            # Extract FFmpeg archive (for both Debug and Release to match Windows)
+            for artifact in ${GITHUB_WORKSPACE}/**/linux-ffmpeg-*.tar.gz; do
+              if [[ -f "${artifact}" ]]; then
+                echo "Extracting FFmpeg ${artifact}"
+                tar -xzf "${artifact}"
+              fi
+            done
             
             # Create combined archive
             tar -czf linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz *
