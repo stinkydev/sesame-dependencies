@@ -6,6 +6,7 @@ VERSION='1.1.1w'
 URI='https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz'
 HASH="${SCRIPT_DIR}/deps.linux/checksums/OpenSSL_1_1_1w.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')
+EXTRACTED_DIR='openssl-OpenSSL_1_1_1w'
 
 setup() {
     log_info "Setup ${NAME} (${TARGET})"
@@ -14,8 +15,8 @@ setup() {
 }
 
 clean() {
-    if [[ -d "${WORK_ROOT}/openssl-OpenSSL_1_1_1w" ]]; then
-        cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
+    if [[ -d "${WORK_ROOT}/${EXTRACTED_DIR}" ]]; then
+        cd "${WORK_ROOT}/${EXTRACTED_DIR}"
         
         if [[ -f "Makefile" ]]; then
             log_info "Clean build directory (${TARGET})"
@@ -30,7 +31,7 @@ patch() {
 
 configure() {
     log_info "Configure ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
+    cd "${WORK_ROOT}/${EXTRACTED_DIR}"
     
     local options=(
         "--prefix=${OUTPUT_PATH}"
@@ -44,14 +45,14 @@ configure() {
 
 build() {
     log_info "Build ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
+    cd "${WORK_ROOT}/${EXTRACTED_DIR}"
     
     make -j "${NUM_PROCS}"
 }
 
 install() {
     log_info "Install ${NAME} (${TARGET})"
-    cd "${WORK_ROOT}/openssl-OpenSSL_1_1_1w"
+    cd "${WORK_ROOT}/${EXTRACTED_DIR}"
     
     make install_sw
 }
