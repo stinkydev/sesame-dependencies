@@ -330,7 +330,7 @@ jobs:
             pushd "${_temp}" > /dev/null
             
             # Extract dependency archives for this configuration
-            for artifact in ${GITHUB_WORKSPACE}/**/*-${config}.tar.gz; do
+            for artifact in ${GITHUB_WORKSPACE}/**/linux-deps-*-${config}.tar.gz; do
               if [[ -f "${artifact}" ]]; then
                 echo "Extracting ${artifact}"
                 tar -xzf "${artifact}"
@@ -348,7 +348,7 @@ jobs:
             fi
             
             # Create combined archive
-            tar -czf linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz -- *
+            tar -czf linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz *
             mv linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz ${GITHUB_WORKSPACE}
             
             popd > /dev/null
