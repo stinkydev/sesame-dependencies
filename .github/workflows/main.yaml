@@ -295,6 +295,7 @@ jobs:
       - name: Download CEF Binaries
         run: |
           : Download CEF Binaries
+          set -e  # Exit on error
           
           # Read CEF configuration
           CEF_WINDOWS_URL=$(jq -r '.cef_binaries.windows.url' cef-config.json)
@@ -302,11 +303,29 @@ jobs:
           CEF_LINUX_URL=$(jq -r '.cef_binaries.linux.url' cef-config.json)
           CEF_LINUX_FILENAME=$(jq -r '.cef_binaries.linux.filename' cef-config.json)
           
+          # Validate configuration values
+          if [[ -z "${CEF_WINDOWS_URL}" || "${CEF_WINDOWS_URL}" == "null" ]]; then
+            echo "Error: CEF Windows URL not found in configuration"
+            exit 1
+          fi
+          if [[ -z "${CEF_WINDOWS_FILENAME}" || "${CEF_WINDOWS_FILENAME}" == "null" ]]; then
+            echo "Error: CEF Windows filename not found in configuration"
+            exit 1
+          fi
+          if [[ -z "${CEF_LINUX_URL}" || "${CEF_LINUX_URL}" == "null" ]]; then
+            echo "Error: CEF Linux URL not found in configuration"
+            exit 1
+          fi
+          if [[ -z "${CEF_LINUX_FILENAME}" || "${CEF_LINUX_FILENAME}" == "null" ]]; then
+            echo "Error: CEF Linux filename not found in configuration"
+            exit 1
+          fi
+          
           echo "Downloading Windows CEF binary from: ${CEF_WINDOWS_URL}"
-          curl -L -o "${GITHUB_WORKSPACE}/${CEF_WINDOWS_FILENAME}" "${CEF_WINDOWS_URL}"
+          curl -fL --retry 3 --retry-delay 5 -o "${GITHUB_WORKSPACE}/${CEF_WINDOWS_FILENAME}" "${CEF_WINDOWS_URL}"
           
           echo "Downloading Linux CEF binary from: ${CEF_LINUX_URL}"
-          curl -L -o "${GITHUB_WORKSPACE}/${CEF_LINUX_FILENAME}" "${CEF_LINUX_URL}"
+          curl -fL --retry 3 --retry-delay 5 -o "${GITHUB_WORKSPACE}/${CEF_LINUX_FILENAME}" "${CEF_LINUX_URL}"
           
           echo "CEF binaries downloaded successfully"
           ls -lh "${GITHUB_WORKSPACE}"/cef_binary_*
