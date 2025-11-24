@@ -78,6 +78,16 @@ fi
 # Configure FFmpeg
 echo "[INFO] Configuring FFmpeg..."
 
+# Set up paths to find built dependencies (x264, libvpx)
+DEPS_PATH="${PROJECT_ROOT}/linux/sesame-dependencies-${TARGET}-${CONFIGURATION}"
+if [[ -d "${DEPS_PATH}" ]]; then
+    echo "[INFO] Using built dependencies from ${DEPS_PATH}"
+    export PKG_CONFIG_PATH="${DEPS_PATH}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+    export LD_LIBRARY_PATH="${DEPS_PATH}/lib:${LD_LIBRARY_PATH:-}"
+    export CFLAGS="-I${DEPS_PATH}/include ${CFLAGS:-}"
+    export LDFLAGS="-L${DEPS_PATH}/lib ${LDFLAGS:-}"
+fi
+
 # Determine compiler
 CC_CXX_FLAGS=""
 if command -v clang >/dev/null 2>&1; then

@@ -225,14 +225,23 @@ jobs:
             nasm \
             yasm \
             pkg-config \
-            libx264-dev \
             libx265-dev \
-            libvpx-dev \
             libmp3lame-dev \
             libopus-dev \
             libvorbis-dev \
             libaom-dev \
             git
+
+      - name: Build x264 and libvpx
+        run: |
+          # Build x264 and libvpx as dependencies for FFmpeg
+          
+          export TARGET="x86_64"
+          export CONFIGURATION="Release"
+          export DEPENDENCIES="x264 libvpx"
+          
+          chmod +x ./build-dependencies.sh
+          ./build-dependencies.sh
 
       - name: Setup Environment
         id: setup

@@ -43,14 +43,17 @@ CONFIGURATION=Debug SHARED=true ./build-dependencies.sh
 
 ### Linux
 
-FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script builds FFmpeg with common codec support using system libraries.
+FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script builds FFmpeg with codec support, using both built-from-source and system libraries.
 
 #### Prerequisites
 
 ```bash
-sudo apt-get install -y nasm yasm libx264-dev libx265-dev libvpx-dev \
+# Required packages (some codecs use system libraries)
+sudo apt-get install -y nasm yasm libx265-dev \
   libmp3lame-dev libopus-dev libvorbis-dev libaom-dev pkg-config
 ```
+
+**Note**: libx264 and libvpx are now built from source and included in the dependency packages. They are automatically built when running `build-ffmpeg.sh`.
 
 #### Building
 
@@ -58,11 +61,13 @@ sudo apt-get install -y nasm yasm libx264-dev libx265-dev libvpx-dev \
 ./build-ffmpeg.sh
 ```
 
-The script will build FFmpeg with the following features:
-- GPL and version3 licensed codecs
-- H.264 (libx264), H.265 (libx265), VP8/VP9 (libvpx), AV1 (libaom)
-- MP3 (libmp3lame), Opus (libopus), Vorbis (libvorbis)
-- Shared libraries
+The script will:
+1. Build x264 and libvpx from source
+2. Build FFmpeg with the following features:
+   - GPL and version3 licensed codecs
+   - H.264 (libx264 - built from source), H.265 (libx265), VP8/VP9 (libvpx - built from source), AV1 (libaom)
+   - MP3 (libmp3lame), Opus (libopus), Vorbis (libvorbis)
+   - Shared libraries
 
 ### macOS and Windows
 
