@@ -86,7 +86,7 @@ if [[ -d "${DEPS_PATH}" ]]; then
     echo "[INFO] Using built dependencies from ${DEPS_PATH}"
     export PKG_CONFIG_PATH="${DEPS_PATH}/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
     export LD_LIBRARY_PATH="${DEPS_PATH}/lib:${LD_LIBRARY_PATH:-}"
-    export CFLAGS="-I${DEPS_PATH}/include ${CFLAGS:-}"
+    export CPPFLAGS="-I${DEPS_PATH}/include ${CPPFLAGS:-}"
     export LDFLAGS="-L${DEPS_PATH}/lib ${LDFLAGS:-}"
 fi
 
