@@ -47,7 +47,8 @@ configure() {
         options+=("--disable-shared")
     fi
     
-    ./configure "${options[@]}"
+    # Build with -fPIC for compatibility with shared libraries
+    CFLAGS="-fPIC ${CFLAGS:-}" ./configure "${options[@]}"
 }
 
 build() {
