@@ -2,7 +2,7 @@ param(
     [string] $Name = 'websocketpp',
     [string] $Version = '0.8.2',
     [string] $Uri = 'https://github.com/stinkydev/websocketpp.git',
-    [string] $Hash = '047ff3caac1b34e8f0df5a9c8f79fabdeaf7814d',
+    [string] $Hash = '782bc474a1bd596968c8efec6f4b48a7535bc44f',
     [array] $Targets = @('x64'),
     [array] $Patches = @(
     )
