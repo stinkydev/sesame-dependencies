@@ -2,6 +2,31 @@
 
 This repository is a collection of build scripts to build Sesame dependencies for Windows and Linux. "Inspired" by OBS...
 
+## CEF Binaries in Releases
+
+When creating a release tag, CEF (Chromium Embedded Framework) binaries are automatically downloaded and included in the release. The URLs for CEF binaries are configurable via the `cef-config.json` file in the repository root.
+
+### Configuring CEF Binary URLs
+
+Edit the `cef-config.json` file to update the URLs for Windows and Linux CEF binaries:
+
+```json
+{
+  "cef_binaries": {
+    "windows": {
+      "url": "https://cdn-fastly.obsproject.com/downloads/cef_binary_6533_windows_x64_v2.zip",
+      "filename": "cef_binary_6533_windows_x64_v2.zip"
+    },
+    "linux": {
+      "url": "https://cdn-fastly.obsproject.com/downloads/cef_binary_6533_linux_x86_64.tar.xz",
+      "filename": "cef_binary_6533_linux_x86_64.tar.xz"
+    }
+  }
+}
+```
+
+The binaries will be automatically downloaded during the release creation process and included as release artifacts.
+
 ## Windows
 
 Sesame dependencies for Windows can be built via the `Build-Dependencies.ps1` PowerShell script. Powershell >= 7 is required.

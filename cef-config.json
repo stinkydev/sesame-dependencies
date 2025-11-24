@@ -1,0 +1,12 @@
+{
+  "cef_binaries": {
+    "windows": {
+      "url": "https://cdn-fastly.obsproject.com/downloads/cef_binary_6533_windows_x64_v2.zip",
+      "filename": "cef_binary_6533_windows_x64_v2.zip"
+    },
+    "linux": {
+      "url": "https://cdn-fastly.obsproject.com/downloads/cef_binary_6533_linux_x86_64.tar.xz",
+      "filename": "cef_binary_6533_linux_x86_64.tar.xz"
+    }
+  }
+}

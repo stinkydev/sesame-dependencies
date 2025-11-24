@@ -280,6 +280,9 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Get Metadata
         id: metadata
         run: |
@@ -288,6 +291,25 @@ jobs:
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4
+
+      - name: Download CEF Binaries
+        run: |
+          : Download CEF Binaries
+          
+          # Read CEF configuration
+          CEF_WINDOWS_URL=$(jq -r '.cef_binaries.windows.url' cef-config.json)
+          CEF_WINDOWS_FILENAME=$(jq -r '.cef_binaries.windows.filename' cef-config.json)
+          CEF_LINUX_URL=$(jq -r '.cef_binaries.linux.url' cef-config.json)
+          CEF_LINUX_FILENAME=$(jq -r '.cef_binaries.linux.filename' cef-config.json)
+          
+          echo "Downloading Windows CEF binary from: ${CEF_WINDOWS_URL}"
+          curl -L -o "${GITHUB_WORKSPACE}/${CEF_WINDOWS_FILENAME}" "${CEF_WINDOWS_URL}"
+          
+          echo "Downloading Linux CEF binary from: ${CEF_LINUX_URL}"
+          curl -L -o "${GITHUB_WORKSPACE}/${CEF_LINUX_FILENAME}" "${CEF_LINUX_URL}"
+          
+          echo "CEF binaries downloaded successfully"
+          ls -lh "${GITHUB_WORKSPACE}"/cef_binary_*
 
       - name: Display structure of downloaded files
         run: ls -R ${{ github.workspace }}
@@ -378,3 +400,4 @@ jobs:
           files: |
             ${{ github.workspace }}/windows-*-x64*.zip
             ${{ github.workspace }}/linux-*.tar.gz
+            ${{ github.workspace }}/cef_binary_*
