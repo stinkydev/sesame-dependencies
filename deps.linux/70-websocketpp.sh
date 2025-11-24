@@ -3,8 +3,8 @@
 # Dependency information
 NAME='websocketpp'
 VERSION='0.8.2'
-URI='https://github.com/zaphoyd/websocketpp.git'
-HASH='56123c87598f8b1dd471be83ca841ceae07f95ba'
+URI='https://github.com/stinkydev/websocketpp.git'
+HASH='782bc474a1bd596968c8efec6f4b48a7535bc44f'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
