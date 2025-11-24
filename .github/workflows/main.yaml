@@ -170,7 +170,9 @@ jobs:
             automake \
             libtool \
             curl \
-            git
+            git \
+            nasm \
+            yasm
 
       - name: Setup Environment
         id: setup
@@ -222,23 +224,19 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq \
             build-essential \
+            cmake \
             nasm \
             yasm \
             pkg-config \
-            libx265-dev \
-            libmp3lame-dev \
-            libopus-dev \
-            libvorbis-dev \
-            libaom-dev \
             git
 
-      - name: Build x264 and libvpx
+      - name: Build FFmpeg and dependencies
         run: |
-          # Build x264 and libvpx as dependencies for FFmpeg
+          # Build FFmpeg with all dependencies
           
           export TARGET="x86_64"
           export CONFIGURATION="Release"
-          export DEPENDENCIES="x264 libvpx"
+          export SUB_DIR="deps.ffmpeg"
           
           chmod +x ./build-dependencies.sh
           ./build-dependencies.sh
@@ -256,15 +254,13 @@ jobs:
           echo "artifactFileName=${FILE_NAME}" >> $GITHUB_OUTPUT
           echo "target=${TARGET}" >> $GITHUB_OUTPUT
 
-      - name: Build FFmpeg
+      - name: Package FFmpeg
         run: |
-          # Build FFmpeg
-
-          export TARGET="${{ steps.setup.outputs.target }}"
-          export CONFIGURATION="Release"
+          # Package FFmpeg
           
-          chmod +x ./build-ffmpeg.sh
-          ./build-ffmpeg.sh
+          cd linux/sesame-dependencies-x86_64-Release
+          tar -czf "linux-ffmpeg-$(date +%Y-%m-%d)-x86_64.tar.gz" ./*
+          mv "linux-ffmpeg-$(date +%Y-%m-%d)-x86_64.tar.gz" "${GITHUB_WORKSPACE}/"
 
       - name: Publish Build Artifacts
         if: github.event_name != 'pull_request' || fromJSON(needs.pre-checks.outputs.seekingTesters)

@@ -53,6 +53,10 @@ log_debug() {
     fi
 }
 
+log_warning() {
+    echo "[WARNING] $*" >&2
+}
+
 # Display configuration
 echo "---------------------------------------------------------------------------------------------------"
 echo -n "[SESAME-DEPENDENCIES] - configuration "
@@ -167,10 +171,10 @@ setup_dependency() {
 # Export functions and variables for dependency scripts
 export SCRIPT_DIR PROJECT_ROOT WORK_ROOT OUTPUT_PATH CONFIGURATION TARGET ARCH
 export CMAKE_OPTIONS NUM_PROCS SHARED CLEAN SKIP_BUILD SKIP_UNPACK
-export -f log_info log_error log_debug setup_dependency
+export -f log_info log_error log_debug log_warning setup_dependency
 
 # Determine which dependencies to build
-SUB_DIR="deps.linux"
+SUB_DIR="${SUB_DIR:-deps.linux}"
 
 if [[ -z "${DEPENDENCIES}" ]]; then
     # Build all dependencies

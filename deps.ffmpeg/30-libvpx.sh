@@ -4,7 +4,7 @@
 NAME='libvpx'
 VERSION='1.14.1'
 URI='https://github.com/webmproject/libvpx/archive/v1.14.1.tar.gz'
-HASH="${SCRIPT_DIR}/deps.linux/checksums/v1.14.1-libvpx.tar.gz.sha256"
+HASH="${SCRIPT_DIR}/deps.ffmpeg/checksums/v1.14.1.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')
 EXTRACTED_DIR='libvpx-1.14.1'
 
@@ -40,6 +40,9 @@ configure() {
         "--disable-examples"
         "--disable-docs"
         "--disable-unit-tests"
+        "--enable-vp8"
+        "--enable-vp9"
+        "--enable-vp9-highbitdepth"
     )
     
     # Add shared library support if requested
@@ -52,7 +55,10 @@ configure() {
     # Set target architecture
     case "${ARCH}" in
         x86_64)
-            options+=("--target=x86_64-linux-gcc")
+            options+=(
+                "--target=x86_64-linux-gcc"
+                "--enable-runtime-cpu-detect"
+            )
             ;;
         aarch64)
             options+=("--target=arm64-linux-gcc")
