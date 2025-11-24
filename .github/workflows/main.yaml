@@ -297,6 +297,12 @@ jobs:
           : Download CEF Binaries
           set -e  # Exit on error
           
+          # Validate configuration file exists
+          if [[ ! -f "cef-config.json" ]]; then
+            echo "Error: cef-config.json not found"
+            exit 1
+          fi
+          
           # Read CEF configuration
           CEF_WINDOWS_URL=$(jq -r '.cef_binaries.windows.url' cef-config.json)
           CEF_WINDOWS_FILENAME=$(jq -r '.cef_binaries.windows.filename' cef-config.json)
@@ -327,8 +333,8 @@ jobs:
           echo "Downloading Linux CEF binary from: ${CEF_LINUX_URL}"
           curl -fL --retry 3 --retry-delay 5 -o "${GITHUB_WORKSPACE}/${CEF_LINUX_FILENAME}" "${CEF_LINUX_URL}"
           
-          echo "CEF binaries downloaded successfully"
-          ls -lh "${GITHUB_WORKSPACE}"/cef_binary_*
+          echo "CEF binaries downloaded successfully:"
+          ls -lh "${GITHUB_WORKSPACE}/${CEF_WINDOWS_FILENAME}" "${GITHUB_WORKSPACE}/${CEF_LINUX_FILENAME}"
 
       - name: Display structure of downloaded files
         run: ls -R ${{ github.workspace }}
