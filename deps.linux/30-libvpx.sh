@@ -57,6 +57,10 @@ configure() {
         aarch64)
             options+=("--target=arm64-linux-gcc")
             ;;
+        *)
+            log_error "Unsupported architecture: ${ARCH}"
+            exit 1
+            ;;
     esac
     
     ./configure "${options[@]}"

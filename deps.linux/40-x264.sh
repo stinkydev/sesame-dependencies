@@ -19,6 +19,13 @@ setup() {
     else
         log_info "${NAME} already cloned"
         cd "${NAME}"
+        # Verify we're at the correct commit
+        current_hash=$(git rev-parse HEAD)
+        if [[ "${current_hash}" != "${HASH}" ]]; then
+            log_info "Updating to correct commit ${HASH}"
+            git fetch origin
+            git checkout "${HASH}"
+        fi
     fi
 }
 
