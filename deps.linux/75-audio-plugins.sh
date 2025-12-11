@@ -2,9 +2,9 @@
 
 # Dependency information
 NAME='audio-plugins'
-VERSION='0.0.1'
+VERSION='0.0.2'
 URI='https://github.com/stinkydev/audio-plugins.git'
-HASH='1ec19f2604104d2e4ca9a56a1380801ac091c5e6'
+HASH='44ec4ff655f3bea41738b47c199faa013729dda5'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {

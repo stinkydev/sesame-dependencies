@@ -1,8 +1,8 @@
 param(
     [string] $Name = 'audio-plugins',
-    [string] $Version = '0.0.1',
+    [string] $Version = '0.0.2',
     [string] $Uri = 'https://github.com/stinkydev/audio-plugins.git',
-    [string] $Hash = '1ec19f2604104d2e4ca9a56a1380801ac091c5e6',
+    [string] $Hash = '44ec4ff655f3bea41738b47c199faa013729dda5',
     [array] $Targets = @('x64')
 )
 
