@@ -4,7 +4,7 @@
 NAME='audio-plugins'
 VERSION='0.0.3'
 URI='https://github.com/stinkydev/audio-plugins.git'
-HASH='baf72e3d0e0085f130ffa70d9ef63db6c0c48aaa'
+HASH='9658c1dd68d149428195a763bc44170fab647081'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
