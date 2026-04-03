@@ -1,0 +1,22 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>System.Collections.Hashtable</T>
+      <T>System.Object</T>
+    </TN>
+    <DCT>
+      <En>
+        <S N="Key">Hash</S>
+        <S N="Value">8ACF0BF64EDA29183B4C6745C3C6A12562FD9A8AB08D61788CF56E6659C66B3B</S>
+      </En>
+      <En>
+        <S N="Key">Algorithm</S>
+        <S N="Value">SHA256</S>
+      </En>
+      <En>
+        <S N="Key">Path</S>
+        <S N="Value">protoc-gen-doc_1.5.1_windows_amd64.tar.gz</S>
+      </En>
+    </DCT>
+  </Obj>
+</Objs>

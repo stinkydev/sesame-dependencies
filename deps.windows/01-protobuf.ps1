@@ -6,7 +6,11 @@ param(
     [array] $Targets = @('x64'),
     [switch] $ForceShared = $false,
     [array] $Patches = @(
-    )
+    ),
+    # protoc-gen-doc settings
+    [string] $ProtocGenDocVersion = '1.5.1',
+    [string] $ProtocGenDocUri = 'https://github.com/pseudomuto/protoc-gen-doc/releases/download/v1.5.1/protoc-gen-doc_1.5.1_windows_amd64.tar.gz',
+    [string] $ProtocGenDocHash = "$PSScriptRoot/checksums/protoc-gen-doc_1.5.1_windows_amd64.tar.gz.sha256"
 )
 
 function Setup {
@@ -86,4 +90,59 @@ function Install {
     }
 
     Invoke-External cmake @Options
+
+    # Install protoc-gen-doc
+    Install-ProtocGenDoc
+}
+
+function Install-ProtocGenDoc {
+    Log-Information "Install protoc-gen-doc"
+    
+    $DownloadDir = Join-Path $Path "protoc-gen-doc-download"
+    if ( -not ( Test-Path $DownloadDir ) ) {
+        New-Item -ItemType Directory -Path $DownloadDir -Force | Out-Null
+    }
+    
+    Set-Location $DownloadDir
+    
+    $ArchiveFile = "protoc-gen-doc_${ProtocGenDocVersion}_windows_amd64.tar.gz"
+    $TarFile = "protoc-gen-doc_${ProtocGenDocVersion}_windows_amd64.tar"
+    
+    # Download if hash file exists
+    if ( Test-Path $ProtocGenDocHash ) {
+        $Params = @{
+            Uri = $ProtocGenDocUri
+            HashFile = $ProtocGenDocHash
+            Resume = $true
+        }
+        
+        if ( Test-Path $ArchiveFile ) {
+            $Params += @{ CheckExisting = $true }
+        }
+        
+        Invoke-SafeWebRequest @Params
+        
+        # Extract archive using 7z (handles tar.gz properly in two steps)
+        if ( Get-Command 7z -ErrorAction SilentlyContinue ) {
+            # First extract .tar.gz to get .tar
+            Invoke-External 7z x -y $ArchiveFile
+            # Then extract .tar to get contents
+            if ( Test-Path $TarFile ) {
+                Invoke-External 7z x -y $TarFile
+            }
+        } else {
+            throw "7-zip not found. Please install 7-zip first."
+        }
+        
+        # Copy binary to output bin directory
+        $BinDir = "$($ConfigData.OutputPath)/bin"
+        if ( -not ( Test-Path $BinDir ) ) {
+            New-Item -ItemType Directory -Path $BinDir -Force | Out-Null
+        }
+        
+        Copy-Item -Path "protoc-gen-doc.exe" -Destination $BinDir -Force
+        Log-Information "Installed protoc-gen-doc.exe to ${BinDir}"
+    } else {
+        Log-Warning "Checksum file not found for protoc-gen-doc, skipping installation"
+    }
 }
