@@ -7,7 +7,7 @@ param(
 )
 
 function Setup {
-    Setup-Dependency -Uri $Uri -Hash $Hash -DestinationPath $Path
+    Setup-Dependency -Uri $Uri -Hash $Hash -DestinationPath $Path -Branch "main"
 }
 
 function Clean {
