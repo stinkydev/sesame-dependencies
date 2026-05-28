@@ -202,6 +202,10 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
     # Change to work directory
     cd "${WORK_ROOT}"
     
+    # Reset NAME so a script that omits it can't inherit the previous one's
+    # value (used below to resolve the license folder).
+    NAME=""
+
     # Source the dependency script
     # shellcheck disable=SC1090
     source "${dep_file}"
@@ -225,13 +229,17 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
         fi
     done
     
-    # Copy license files
+    # Copy license files. Resolve the folder from the dependency's declared
+    # NAME (e.g. 'FFmpeg', 'vulkansdk'), falling back to the script filename,
+    # and match case-insensitively so casing differences don't matter on
+    # case-sensitive filesystems.
     dep_name=$(basename "${dep_file}" .sh)
     dep_name="${dep_name#[0-9][0-9]-}"
-    if [[ -d "${SCRIPT_DIR}/licenses/${dep_name}" ]]; then
-        log_info "Installing license files for ${dep_name}"
+    license_dir=$(find "${SCRIPT_DIR}/licenses" -mindepth 1 -maxdepth 1 -type d -iname "${NAME:-${dep_name}}" 2>/dev/null | head -1)
+    if [[ -n "${license_dir}" ]]; then
+        log_info "Installing license files for $(basename "${license_dir}")"
         mkdir -p "${OUTPUT_PATH}/licenses"
-        cp -r "${SCRIPT_DIR}/licenses/${dep_name}" "${OUTPUT_PATH}/licenses/"
+        cp -r "${license_dir}" "${OUTPUT_PATH}/licenses/"
     fi
     
     # Clean up functions
