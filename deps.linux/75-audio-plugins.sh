@@ -2,9 +2,9 @@
 
 # Dependency information
 NAME='audio-plugins'
-VERSION='0.0.4'
+VERSION='0.0.6'
 URI='https://github.com/stinkydev/audio-plugins.git'
-HASH='509d1d64f76044ed5518fafc6a825658dc37d46e'
+HASH='aa105260a9a6cea8699cec4f6acd8e65efcfce1b'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
@@ -64,4 +64,6 @@ install() {
 
 fixup() {
     log_info "Fixup ${NAME} (${TARGET})"
+    # Upstream installs its LICENSE + third-party notices (incl. CLAP) into
+    # licenses/audio-plugins/ via its own CMake install rules.
 }

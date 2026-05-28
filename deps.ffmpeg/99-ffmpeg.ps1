@@ -62,9 +62,6 @@ function Configure {
         $(if ( $Target -eq 'x64' ) { '--target-os=win64' } else { '--target-os=win32' })
         '--enable-libmp3lame'
         '--enable-w32threads'
-        '--enable-version3'
-        '--enable-gpl'
-        '--enable-libx264'
         '--enable-libopus'
         '--enable-libvorbis'
         '--enable-libvpx'

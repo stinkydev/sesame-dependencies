@@ -41,9 +41,15 @@ CONFIGURATION=Debug SHARED=true ./build-dependencies.sh
 
 ## FFmpeg
 
+This project builds FFmpeg under the **LGPL v2.1+ only**. GPL-licensed components
+(e.g. libx264, libx265, libpostproc) are intentionally excluded so that the
+resulting binaries can be distributed under the LGPL. Do not add
+`--enable-gpl`, `--enable-version3`, or any GPL-only external library to the
+configure flags.
+
 ### Linux
 
-FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script uses a modular build system that builds all required dependencies from source, including video and audio codecs.
+FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script uses a modular build system that builds all required dependencies from source.
 
 #### Prerequisites
 
@@ -52,7 +58,7 @@ FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script
 sudo apt-get install -y build-essential cmake nasm yasm pkg-config git
 ```
 
-**Note**: All codecs (x264, x265, libvpx, opus, vorbis, ogg, lame) are built from source using scripts in the `deps.ffmpeg/` directory.
+**Note**: All codecs (libvpx, opus, vorbis, ogg, lame) are built from source using scripts in the `deps.ffmpeg/` directory.
 
 #### Building
 
@@ -61,14 +67,31 @@ sudo apt-get install -y build-essential cmake nasm yasm pkg-config git
 ```
 
 The script will:
-1. Build all FFmpeg dependencies from source (x264, x265, libvpx, opus, vorbis, ogg, lame, zlib, libpng)
-2. Build FFmpeg with the following features:
-   - GPL and version3 licensed codecs
-   - H.264 (libx264), H.265 (libx265), VP8/VP9 (libvpx)
-   - MP3 (libmp3lame), Opus (libopus), Vorbis (libvorbis)
+1. Build all FFmpeg dependencies from source (libvpx, opus, vorbis, ogg, lame, zlib, libpng)
+2. Build FFmpeg with the following features (LGPL v2.1+ only):
+   - VP8/VP9 (libvpx, BSD)
+   - MP3 (libmp3lame, LGPL v2+)
+   - Opus (libopus, BSD)
+   - Vorbis (libvorbis, BSD)
    - Shared libraries
-   - Optional: AV1 (libaom, libsvtav1) if system packages are available
+   - `libpostproc` is disabled (GPL-only)
 
-### macOS and Windows
+### Windows
 
-FFmpeg can also be built via the `build-ffmpeg.zsh` Zsh-script. FFmpeg can be compiled natively on macOS and Linux, and cross-compiled on Linux for Windows. In the latter case, specify a Windows-based target (e.g., `windows-x64`) to enable cross-compilation. On macOS, both Intel and Apple Silicon are supported.
+FFmpeg for Windows can be built via the `Build-FFMpeg.ps1` PowerShell script (PowerShell >= 7, MSYS2 with the MSVC toolchain). It builds the same dependencies from the `deps.ffmpeg/` `*.ps1` scripts and produces shared libraries under the same LGPL v2.1+ configuration.
+
+```powershell
+./Build-FFMpeg.ps1
+```
+
+## Licensing
+
+FFmpeg as built by this repository is licensed under the GNU Lesser General
+Public License, version 2.1 or later. The full license text and FFmpeg's own
+licensing notice are installed alongside the binaries under
+`licenses/FFmpeg/`. License texts for the bundled external libraries are
+installed under `licenses/<library>/`.
+
+If you need to add a new codec or external library, verify its license is
+compatible with LGPL v2.1+ before enabling it. GPL-only options must not be
+re-introduced.
