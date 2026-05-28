@@ -2,9 +2,9 @@
 
 # Dependency information
 NAME='moq-cpp'
-VERSION='v0.0.10'
+VERSION='v0.0.12'
 URI='https://github.com/stinkydev/moq-cpp.git'
-HASH="24973eac1d120655b3c6b92d98b8a0832fc234b0"
+HASH="406ae7dd8fd150d361c13122eb341ca5a431ed1c"
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
@@ -63,4 +63,23 @@ install() {
 
 fixup() {
     log_info "Fixup ${NAME} (${TARGET})"
+    cd "${WORK_ROOT}/moq-cpp"
+
+    # moq-cpp statically links its full Rust crate tree; the aggregated
+    # attribution is generated upstream (cargo-about). Harvest those notices
+    # into the package instead of maintaining a copy in this repo.
+    local license_dir="${OUTPUT_PATH}/licenses/${NAME}"
+    mkdir -p "${license_dir}"
+
+    local found=0
+    for f in LICENSE THIRD-PARTY-NOTICES.txt THIRD_PARTY_LICENSES.md; do
+        if [[ -f "${f}" ]]; then
+            cp -f "${f}" "${license_dir}/"
+            found=1
+        fi
+    done
+
+    if [[ "${found}" -eq 0 ]]; then
+        log_warning "${NAME}: no upstream license/notice files found - attribution may be incomplete"
+    fi
 }

@@ -1,8 +1,8 @@
 param(
     [string] $Name = 'moq-cpp',
-    [string] $Version = 'v0.0.9',
+    [string] $Version = 'v0.0.12',
     [string] $Uri = 'https://github.com/stinkydev/moq-cpp.git',
-    [string] $Hash = "9dcc0ac0f70378c8af416ae44bfdfa879f69c459",
+    [string] $Hash = "406ae7dd8fd150d361c13122eb341ca5a431ed1c",
     [array] $Targets = @('x64'),
     [switch] $ForceShared = $false,
     [array] $Patches = @(
@@ -82,4 +82,27 @@ function Install {
     }
 
     Invoke-External cmake @Options
+}
+
+function Fixup {
+    Log-Information "Fixup (${Target})"
+    Set-Location $Path
+
+    # moq-cpp statically links its full Rust crate tree; the aggregated
+    # attribution is generated upstream (cargo-about). Harvest those notices
+    # into the package instead of maintaining a copy in this repo.
+    $LicenseDir = "$($script:ConfigData.OutputPath)/licenses/${Name}"
+    $null = New-Item -ItemType Directory -Path $LicenseDir -Force
+
+    $Found = $false
+    foreach ( $f in @('LICENSE', 'THIRD-PARTY-NOTICES.txt', 'THIRD_PARTY_LICENSES.md') ) {
+        if ( Test-Path $f ) {
+            Copy-Item -Path $f -Destination $LicenseDir -Force
+            $Found = $true
+        }
+    }
+
+    if ( ! $Found ) {
+        Log-Warning "${Name}: no upstream license/notice files found - attribution may be incomplete"
+    }
 }
