@@ -31,7 +31,7 @@ the binaries).
 |---|---|---|---|
 | [Protocol Buffers](https://protobuf.dev/) | 3.21.12 | BSD-3-Clause | Google. |
 | [SRT](https://github.com/Haivision/srt) | 1.5.4 | MPL 2.0 | If you modify any SRT source file, you must publish that modified file's source. |
-| [moq-cpp](https://github.com/stinkydev/moq-cpp) | v0.0.12 | MIT (+ bundled Rust crates) | Stinky Computing AB. Statically links its Rust crate tree; full upstream-generated attribution (`THIRD-PARTY-NOTICES.txt` / `THIRD_PARTY_LICENSES.md`) is harvested into `licenses/moq-cpp/` at build time. |
+| [moq-cpp](https://github.com/stinkydev/moq-cpp) | v0.0.13 | MIT (+ bundled Rust crates) | Stinky Computing AB. Statically links its Rust crate tree; full upstream-generated attribution (`THIRD-PARTY-NOTICES.txt` / `THIRD_PARTY_LICENSES.md`) is harvested into `licenses/moq-cpp/` at build time. |
 | [Vulkan SDK](https://vulkan.lunarg.com/) | 1.3.275.0 | Apache 2.0 (loader) | The SDK bundles many components under several licenses (Apache 2.0, MIT, BSD). The bundled `LICENSE.txt` enumerates them. |
 | [OpenSSL](https://www.openssl.org/) | 1.1.1w | OpenSSL License **and** original SSLeay License (dual) | Both notices must be reproduced. |
 | [FreeType](https://freetype.org/) | upstream | FreeType License (BSD-style w/ credit clause) **or** GPLv2 — pick FTL | Requires the acknowledgement "Portions of this software are copyright © `<year>` The FreeType Project (www.freetype.org). All rights reserved." in product documentation. |
