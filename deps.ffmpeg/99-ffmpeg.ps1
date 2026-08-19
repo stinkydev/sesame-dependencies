@@ -65,6 +65,7 @@ function Configure {
         '--enable-libopus'
         '--enable-libvorbis'
         '--enable-libvpx'
+        '--enable-libdav1d'
         '--enable-shared'
         '--enable-zlib'
         '--disable-static'

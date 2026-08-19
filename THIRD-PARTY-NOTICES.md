@@ -21,6 +21,7 @@ the binaries).
 | [libogg](https://xiph.org/ogg/) | upstream | BSD-3-Clause | Xiph.Org Foundation. |
 | [libvorbis](https://xiph.org/vorbis/) | upstream | BSD-3-Clause | Xiph.Org Foundation. |
 | [libvpx](https://chromium.googlesource.com/webm/libvpx) | upstream | BSD-3-Clause | Google / WebM project. Includes `PATENTS` grant. |
+| [dav1d](https://code.videolan.org/videolan/dav1d) | 1.5.1 | BSD-2-Clause | VideoLAN. AV1 software decoder. |
 | [Opus](https://opus-codec.org/) | upstream | BSD-3-Clause | Xiph.Org Foundation, Microsoft, Skype, Octasic, Jean-Marc Valin et al. |
 | [libpng](http://www.libpng.org/pub/png/libpng.html) | upstream | libpng (PNG Reference Library License v2) | |
 | [zlib](https://www.zlib.net/) | 1.3.1 | zlib license | |

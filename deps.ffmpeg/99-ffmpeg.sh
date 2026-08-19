@@ -86,6 +86,7 @@ configure() {
         "--enable-libopus"
         "--enable-libvorbis"
         "--enable-libvpx"
+        "--enable-libdav1d"
         "--enable-libmp3lame"
         "--enable-pthreads"
         "--enable-shared"

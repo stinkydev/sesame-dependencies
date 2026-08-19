@@ -55,10 +55,10 @@ FFmpeg for Linux can be built via the `build-ffmpeg.sh` Bash script. This script
 
 ```bash
 # Required packages
-sudo apt-get install -y build-essential cmake nasm yasm pkg-config git
+sudo apt-get install -y build-essential cmake meson ninja-build nasm yasm pkg-config git
 ```
 
-**Note**: All codecs (libvpx, opus, vorbis, ogg, lame) are built from source using scripts in the `deps.ffmpeg/` directory.
+**Note**: All codecs (libvpx, dav1d, opus, vorbis, ogg, lame) are built from source using scripts in the `deps.ffmpeg/` directory.
 
 #### Building
 
@@ -67,9 +67,10 @@ sudo apt-get install -y build-essential cmake nasm yasm pkg-config git
 ```
 
 The script will:
-1. Build all FFmpeg dependencies from source (libvpx, opus, vorbis, ogg, lame, zlib, libpng)
+1. Build all FFmpeg dependencies from source (libvpx, dav1d, opus, vorbis, ogg, lame, zlib, libpng)
 2. Build FFmpeg with the following features (LGPL v2.1+ only):
    - VP8/VP9 (libvpx, BSD)
+   - AV1 decode (dav1d, BSD)
    - MP3 (libmp3lame, LGPL v2+)
    - Opus (libopus, BSD)
    - Vorbis (libvorbis, BSD)

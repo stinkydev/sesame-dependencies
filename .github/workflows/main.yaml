@@ -225,6 +225,8 @@ jobs:
           sudo apt-get install -y -qq \
             build-essential \
             cmake \
+            meson \
+            ninja-build \
             nasm \
             yasm \
             pkg-config \
