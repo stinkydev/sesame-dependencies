@@ -4,7 +4,7 @@
 NAME='moq-cpp'
 VERSION='v0.0.14'
 URI='https://github.com/stinkydev/moq-cpp.git'
-HASH="93fa199300b065543b16714925e77cd15dd0d9ba"
+HASH="7492d604c104445509013cb0fd6256ec937a54b7"
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
