@@ -2,9 +2,9 @@
 
 # Dependency information
 NAME='moq-cpp'
-VERSION='v0.0.13'
+VERSION='v0.0.14'
 URI='https://github.com/stinkydev/moq-cpp.git'
-HASH="44055956e3329950b46d044617cf63b141a8505e"
+HASH="93fa199300b065543b16714925e77cd15dd0d9ba"
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
