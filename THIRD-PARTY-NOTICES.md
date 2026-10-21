@@ -39,7 +39,7 @@ the binaries).
 | [Asio](https://think-async.com/Asio/) | upstream | Boost Software License 1.0 | Header-only. |
 | [nlohmann/json](https://github.com/nlohmann/json) | upstream | MIT | |
 | [WebSocket++](https://github.com/zaphoyd/websocketpp) | upstream | BSD-3-Clause | |
-| [audio-plugins](https://github.com/stinkydev/audio-plugins) | v0.0.6 | MIT (+ bundled CLAP SDK) | Stinky Computing. Compiles in the CLAP SDK (MIT); upstream `THIRD_PARTY_LICENSES.md` + `licenses/CLAP-LICENSE.txt` are harvested into `licenses/audio-plugins/` at build time. |
+| [audio-plugins](https://github.com/stinkydev/audio-plugins) | v0.0.7 | MIT (+ bundled CLAP SDK) | Stinky Computing. Compiles in the CLAP SDK (MIT); upstream `THIRD_PARTY_LICENSES.md` + `licenses/CLAP-LICENSE.txt` are harvested into `licenses/audio-plugins/` at build time. |
 | [protoc-gen-doc](https://github.com/pseudomuto/protoc-gen-doc) | 1.5.1 | MIT | Build/tooling binary; only ship if you redistribute it. |
 
 ---
