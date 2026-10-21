@@ -3,6 +3,12 @@ param(
     [string] $Version = '1.14.1',
     [string] $Uri = 'https://github.com/webmproject/libvpx/archive/refs/tags/v1.14.1.zip',
     [string] $Hash = "${PSScriptRoot}/checksums/v1.14.1.zip.sha256",
+    [array] $Patches = @(
+        @{
+            PatchFile = "${PSScriptRoot}/patches/libvpx/0001-drop-nasm-debug-info-on-windows.patch"
+            HashSum = "26cb01f92fee41290421cb7fbcf7882aaf2be9b6b7b22b22ee30c116d5751781"
+        }
+    ),
     [array] $Targets = @('x64')
 )
 
@@ -21,6 +27,16 @@ function Clean {
     if ( Test-Path "build_${Target}" ) {
         Log-Information "Clean build directory (${Target})"
         Remove-Item -Path "build_${Target}" -Recurse -Force
+    }
+}
+
+function Patch {
+    Log-Information "Patch (${Target})"
+    Set-Location "${Name}-${Version}"
+
+    $Patches | ForEach-Object {
+        $Params = $_
+        Safe-Patch @Params
     }
 }
 
