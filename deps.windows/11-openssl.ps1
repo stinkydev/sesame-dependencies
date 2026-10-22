@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'openssl',
-    [string] $Version = '1.1.1',
+    [string] $Version = '1.1.1w',
+    [string] $Cpe = 'openssl:openssl',
     [string] $Uri = 'local://openssl-1.1.1w.zip',
     [string] $Hash = ""
 )

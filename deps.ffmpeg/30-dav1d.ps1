@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'dav1d',
     [string] $Version = '1.5.1',
+    [string] $Cpe = 'videolan:dav1d',
     [string] $Uri = 'https://code.videolan.org/videolan/dav1d.git',
     [string] $Hash = '3060ebf8dd26952579373084984daf70a54f5368',
     [array] $Targets = @('x64')

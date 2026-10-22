@@ -65,3 +65,12 @@ install() {
 
     cmake "${options[@]}"
 }
+
+fixup() {
+    log_info "Fixup ${NAME} (${TARGET})"
+
+    # The exported target names system libraries by their absolute path on the build machine; use plain
+    # names so consumers link against their own copies.
+    sed -i -E 's#/usr/lib/[^;"]*/lib([A-Za-z0-9_]+)\.(a|so)#\1#g' \
+        "${OUTPUT_PATH}/lib/cmake/glfw3/glfw3Targets.cmake"
+}

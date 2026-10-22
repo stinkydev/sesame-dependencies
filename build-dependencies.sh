@@ -79,6 +79,7 @@ log_info "Setting up build environment"
 command -v git >/dev/null 2>&1 || { log_error "git is required but not installed."; exit 1; }
 command -v cmake >/dev/null 2>&1 || { log_error "cmake is required but not installed."; exit 1; }
 command -v make >/dev/null 2>&1 || { log_error "make is required but not installed."; exit 1; }
+command -v jq >/dev/null 2>&1 || { log_error "jq is required but not installed."; exit 1; }
 
 # Get number of processors
 NUM_PROCS=$(nproc)
@@ -168,6 +169,39 @@ setup_dependency() {
     fi
 }
 
+# Writes a CycloneDX component record for the dependency just processed into
+# share/sesame-deps/components, the inventory consumed by downstream SBOM
+# generation and vulnerability scanning.
+write_component() {
+    local version="${VERSION#v}"
+    local github_re='^https://github\.com/([^/]+)/([^/]+)'
+    local purl sha256=""
+
+    if [[ "${URI}" =~ ${github_re} ]]; then
+        local repo="${BASH_REMATCH[2]%.git}"
+        purl="pkg:github/${BASH_REMATCH[1],,}/${repo,,}@${version}"
+    else
+        purl="pkg:generic/${NAME,,}@${version}?download_url=$(jq -rn --arg u "${URI}" '$u | @uri')"
+    fi
+
+    if [[ ! "${HASH}" =~ ^[0-9a-f]{40}$ ]] && [[ -f "${HASH}" ]]; then
+        sha256=$(cut -d ' ' -f 1 "${HASH}")
+    fi
+
+    mkdir -p "${OUTPUT_PATH}/share/sesame-deps/components"
+    jq -n \
+        --arg name "${NAME}" --arg version "${version}" --arg purl "${purl}" --arg cpe "${CPE}" \
+        --arg uri "${URI}" --arg hash "${HASH}" --arg sha256 "${sha256}" --arg platform "linux-${TARGET}" '
+        ($hash | test("^[0-9a-f]{40}$")) as $git
+        | { type: "library", name: $name, version: $version, purl: $purl }
+        + (if $cpe != "" then { cpe: "cpe:2.3:a:\($cpe):\($version):*:*:*:*:*:*:*" } else {} end)
+        + (if $sha256 != "" then { hashes: [{ alg: "SHA-256", content: $sha256 }] } else {} end)
+        + { externalReferences: [{ type: (if $git then "vcs" else "distribution" end), url: $uri }],
+            properties: ([{ name: "sesame-deps:platform", value: $platform }]
+              + (if $git then [{ name: "sesame-deps:git-commit", value: $hash }] else [] end)) }' \
+        > "${OUTPUT_PATH}/share/sesame-deps/components/${NAME,,}.json"
+}
+
 # Export functions and variables for dependency scripts
 export SCRIPT_DIR PROJECT_ROOT WORK_ROOT OUTPUT_PATH CONFIGURATION TARGET ARCH
 export CMAKE_OPTIONS NUM_PROCS SHARED CLEAN SKIP_BUILD SKIP_UNPACK
@@ -202,9 +236,13 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
     # Change to work directory
     cd "${WORK_ROOT}"
     
-    # Reset NAME so a script that omits it can't inherit the previous one's
-    # value (used below to resolve the license folder).
+    # Reset the declared fields so a script that omits one can't inherit the
+    # previous script's value.
     NAME=""
+    VERSION=""
+    URI=""
+    HASH=""
+    CPE=""
 
     # Source the dependency script
     # shellcheck disable=SC1090
@@ -223,7 +261,8 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
     fi
     
     for stage in "${STAGES[@]}"; do
-        if type -t "${stage}" >/dev/null 2>&1; then
+        # Only run stages the script defines; 'patch' and 'install' are also system commands.
+        if [[ "$(type -t "${stage}")" == "function" ]]; then
             log_debug "Running stage: ${stage}"
             "${stage}" || log_error "Stage ${stage} failed for $(basename "${dep_file}")"
         fi
@@ -240,6 +279,10 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
         log_info "Installing license files for $(basename "${license_dir}")"
         mkdir -p "${OUTPUT_PATH}/licenses"
         cp -r "${license_dir}" "${OUTPUT_PATH}/licenses/"
+    fi
+
+    if [[ -n "${URI}" ]]; then
+        write_component
     fi
     
     # Clean up functions

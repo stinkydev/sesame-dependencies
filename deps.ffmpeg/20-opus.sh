@@ -3,6 +3,7 @@
 # Dependency information
 NAME='opus'
 VERSION='1.5.2'
+CPE='opus-codec:opus'
 URI='https://github.com/xiph/opus.git'
 HASH='ddbe48383984d56acd9e1ab6a090c54ca6b735a6'
 TARGETS=('x86_64' 'aarch64')

@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'libpng',
     [string] $Version = '1.6.43',
+    [string] $Cpe = 'libpng:libpng',
     [string] $Uri = 'https://sourceforge.net/projects/libpng/files/libpng16/1.6.43/lpng1643.zip',
     [string] $Hash = "${PSScriptRoot}/checksums/lpng1643.zip.sha256",
     [array] $Targets = @('x64')

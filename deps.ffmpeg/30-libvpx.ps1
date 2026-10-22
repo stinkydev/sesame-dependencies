@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'libvpx',
     [string] $Version = '1.14.1',
+    [string] $Cpe = 'webmproject:libvpx',
     [string] $Uri = 'https://github.com/webmproject/libvpx/archive/refs/tags/v1.14.1.zip',
     [string] $Hash = "${PSScriptRoot}/checksums/v1.14.1.zip.sha256",
     [array] $Patches = @(

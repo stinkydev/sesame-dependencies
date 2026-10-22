@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'zlib',
     [string] $Version = '1.3.1',
+    [string] $Cpe = 'zlib:zlib',
     [string] $Uri = 'https://github.com/madler/zlib.git',
     [string] $Hash = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
     [array] $Patches = @(

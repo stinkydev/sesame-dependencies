@@ -3,6 +3,7 @@
 # Dependency information
 NAME='libpng'
 VERSION='1.6.43'
+CPE='libpng:libpng'
 URI='https://downloads.sourceforge.net/project/libpng/libpng16/1.6.43/libpng-1.6.43.tar.xz'
 HASH="${SCRIPT_DIR}/deps.ffmpeg/checksums/libpng-1.6.43.tar.xz.sha256"
 TARGETS=('x86_64' 'aarch64')

@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'protobuf',
     [string] $Version = '3.21.12',
+    [string] $Cpe = 'google:protobuf',
     [string] $Uri = 'https://github.com/protocolbuffers/protobuf.git',
     [string] $Hash = "f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c",
     [array] $Targets = @('x64'),

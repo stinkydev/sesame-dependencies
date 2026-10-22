@@ -3,6 +3,7 @@
 # Dependency information
 NAME='openssl'
 VERSION='1.1.1w'
+CPE='openssl:openssl'
 URI='https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz'
 HASH="${SCRIPT_DIR}/deps.linux/checksums/OpenSSL_1_1_1w.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')

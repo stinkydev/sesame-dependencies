@@ -1,6 +1,7 @@
 param(
     [string] $Name = 'lame',
     [string] $Version = '3.100',
+    [string] $Cpe = 'lame_project:lame',
     [string] $Uri = 'https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz',
     [string] $Hash = "${PSScriptRoot}/checksums/lame-3.100.tar.gz.win.sha256",
     [array] $Patches = @(

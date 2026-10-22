@@ -3,6 +3,7 @@
 # Dependency information
 NAME='protobuf'
 VERSION='3.21.12'
+CPE='google:protobuf'
 URI='https://github.com/protocolbuffers/protobuf.git'
 HASH="f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 TARGETS=('x86_64' 'aarch64')

@@ -1,0 +1,14 @@
+<Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
+  <Obj RefId="0">
+    <TN RefId="0">
+      <T>Microsoft.PowerShell.Commands.FileHashInfo</T>
+      <T>System.Object</T>
+    </TN>
+    <ToString>Microsoft.PowerShell.Commands.FileHashInfo</ToString>
+    <Props>
+      <S N="Algorithm">SHA256</S>
+      <S N="Hash">BDB8AD985A1D7EE30A3F441D67030F55DE47D1961B71A0E2C3062DF3C1D80FA3</S>
+      <S N="Path">tweeny-3.2.0.h</S>
+    </Props>
+  </Obj>
+</Objs>

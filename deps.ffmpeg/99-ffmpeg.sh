@@ -3,6 +3,7 @@
 # Dependency information
 NAME='FFmpeg'
 VERSION='7.1'
+CPE='ffmpeg:ffmpeg'
 URI='https://github.com/FFmpeg/FFmpeg.git'
 HASH='b08d7969c550a804a59511c7b83f2dd8cc0499b8'
 TARGETS=('x86_64' 'aarch64')
