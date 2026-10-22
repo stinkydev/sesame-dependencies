@@ -60,6 +60,7 @@ function Run-Stages {
         $Hashes = @()
         $Uris = @()
         $Patches = @()
+        $Cpe = ''
         $Options = @{}
         $Targets = @($script:Target)
 
@@ -112,6 +113,10 @@ function Run-Stages {
             $null = New-Item -ItemType Directory -Path "$($ConfigData.OutputPath)/licenses" -ErrorAction SilentlyContinue
             Copy-Item -Path "$PSScriptRoot/licenses/${Name}" -Recurse -Force -Destination "$($ConfigData.OutputPath)/licenses"
         }
+
+        if ( $Uri -ne '' ) {
+            Write-Component -Name $Name -Version $Version -Uri $Uri -Hash $Hash -Cpe $Cpe -Patches $Patches
+        }
     }
 }
 
@@ -124,7 +129,7 @@ function Package-Dependencies {
         ffmpeg {
             Get-ChildItem ./bin/* -Include '*.exe' -Exclude 'ffmpeg.exe','ffprobe.exe' | Remove-Item -Force -Recurse
             Get-ChildItem ./lib -Exclude 'zlibstatic.lib','zlib.lib','cmake' | Remove-Item -Force -Recurse
-            Get-ChildItem ./share/* | Remove-Item -Force -Recurse
+            Get-ChildItem ./share/* -Exclude 'sesame-deps' | Remove-Item -Force -Recurse
             Get-ChildItem ./bin/*.lib | Move-Item -Destination ./lib
             Get-ChildItem -Attribute Directory -Recurse -Include 'pkgconfig' | Remove-Item -Force -Recurse
             $ArchiveFileName = "windows-ffmpeg-${CurrentDate}-${Target}.zip"

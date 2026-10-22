@@ -171,6 +171,12 @@ jobs:
             libtool \
             curl \
             git \
+            jq \
+            libx11-dev \
+            libxcursor-dev \
+            libxi-dev \
+            libxinerama-dev \
+            libxrandr-dev \
             nasm \
             yasm
 
@@ -230,7 +236,8 @@ jobs:
             nasm \
             yasm \
             pkg-config \
-            git
+            git \
+            jq
 
       - name: Build FFmpeg and dependencies
         run: |

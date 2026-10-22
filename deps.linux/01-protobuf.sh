@@ -3,6 +3,7 @@
 # Dependency information
 NAME='protobuf'
 VERSION='3.21.12'
+CPE='google:protobuf'
 URI='https://github.com/protocolbuffers/protobuf.git'
 HASH="f0dc78d7e6e331b8c6bb2d5283e06aa26883ca7c"
 TARGETS=('x86_64' 'aarch64')
@@ -122,6 +123,12 @@ install_protoc_gen_doc() {
     cp -f protoc-gen-doc "${bin_dir}/"
     chmod +x "${bin_dir}/protoc-gen-doc"
     log_info "Installed protoc-gen-doc to ${bin_dir}"
+
+    (
+        NAME='protoc-gen-doc' VERSION="${PROTOC_GEN_DOC_VERSION}" URI="${uri}" HASH="${hash}" CPE='' SCOPE='excluded'
+        APPLIED_PATCHES=()
+        write_component
+    )
 }
 
 fixup() {

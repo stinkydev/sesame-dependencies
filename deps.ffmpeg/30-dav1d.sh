@@ -3,6 +3,7 @@
 # Dependency information
 NAME='dav1d'
 VERSION='1.5.1'
+CPE='videolan:dav1d'
 URI='https://code.videolan.org/videolan/dav1d.git'
 HASH='3060ebf8dd26952579373084984daf70a54f5368'
 TARGETS=('x86_64' 'aarch64')

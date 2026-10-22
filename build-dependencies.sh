@@ -79,6 +79,7 @@ log_info "Setting up build environment"
 command -v git >/dev/null 2>&1 || { log_error "git is required but not installed."; exit 1; }
 command -v cmake >/dev/null 2>&1 || { log_error "cmake is required but not installed."; exit 1; }
 command -v make >/dev/null 2>&1 || { log_error "make is required but not installed."; exit 1; }
+command -v jq >/dev/null 2>&1 || { log_error "jq is required but not installed."; exit 1; }
 
 # Get number of processors
 NUM_PROCS=$(nproc)
@@ -168,6 +169,72 @@ setup_dependency() {
     fi
 }
 
+# Applies a patch in the current directory and records it for the component record. A patch that is
+# already applied counts as applied; any other failure returns non-zero.
+apply_patch() {
+    local patch_file="$1"
+
+    if /usr/bin/patch -p1 -N -f -r /dev/null < "${patch_file}" > /dev/null 2>&1 \
+        || /usr/bin/patch -p1 -R -f --dry-run < "${patch_file}" > /dev/null 2>&1; then
+        APPLIED_PATCHES+=("${patch_file}")
+        return 0
+    fi
+    return 1
+}
+
+# Writes a CycloneDX component record for the dependency just processed into
+# share/sesame-deps/components, the inventory consumed by downstream SBOM
+# generation and vulnerability scanning. SCOPE=excluded marks a build-time tool
+# that is packaged but not part of the product at run time.
+write_component() {
+    local version="${VERSION#v}"
+    local github_re='^https://github\.com/([^/]+)/([^/]+)'
+    local purl sha256="" purl_version="${version}" patch_urls="[]"
+
+    # A git source is identified by its pinned commit; the display version can name something else (stb).
+    if [[ "${HASH}" =~ ^[0-9a-f]{40}$ ]]; then
+        purl_version="${HASH}"
+    fi
+
+    if [[ "${URI}" =~ ${github_re} ]]; then
+        local repo="${BASH_REMATCH[2]%.git}"
+        purl="pkg:github/${BASH_REMATCH[1],,}/${repo,,}@${purl_version}"
+    else
+        purl="pkg:generic/${NAME,,}@${version}?download_url=$(jq -rn --arg u "${URI}" '$u | @uri')"
+    fi
+
+    if [[ ! "${HASH}" =~ ^[0-9a-f]{40}$ ]] && [[ -f "${HASH}" ]]; then
+        sha256=$(cut -d ' ' -f 1 "${HASH}")
+    fi
+
+    if [[ ${#APPLIED_PATCHES[@]} -gt 0 ]]; then
+        local commit
+        commit=$(git -C "${SCRIPT_DIR}" rev-parse HEAD 2>/dev/null || echo main)
+        patch_urls=$(printf '%s\n' "${APPLIED_PATCHES[@]#"${SCRIPT_DIR}/"}" \
+            | jq -R --arg c "${commit}" '"https://github.com/stinkydev/sesame-dependencies/blob/\($c)/\(.)"' \
+            | jq -s 'unique')
+    fi
+
+    mkdir -p "${OUTPUT_PATH}/share/sesame-deps/components"
+    jq -n \
+        --arg name "${NAME}" --arg version "${version}" --arg purl "${purl}" --arg cpe "${CPE}" \
+        --arg uri "${URI}" --arg hash "${HASH}" --arg sha256 "${sha256}" --arg platform "linux-${TARGET}" \
+        --arg scope "${SCOPE}" --argjson patches "${patch_urls}" '
+        ($hash | test("^[0-9a-f]{40}$")) as $git
+        | { type: "library", name: $name, version: $version }
+        + (if $scope != "" then { scope: $scope } else {} end)
+        + { purl: $purl }
+        + (if $cpe != "" then { cpe: "cpe:2.3:a:\($cpe):\($version):*:*:*:*:*:*:*" } else {} end)
+        + (if $sha256 != "" then { hashes: [{ alg: "SHA-256", content: $sha256 }] } else {} end)
+        + { externalReferences: [{ type: (if $git then "vcs" else "distribution" end), url: $uri }] }
+        + (if ($patches | length) > 0
+           then { pedigree: { patches: [$patches[] | { type: "unofficial", diff: { url: . } }] } }
+           else {} end)
+        + { properties: ([{ name: "sesame-deps:platform", value: $platform }]
+              + (if $git then [{ name: "sesame-deps:git-commit", value: $hash }] else [] end)) }' \
+        > "${OUTPUT_PATH}/share/sesame-deps/components/${NAME,,}.json"
+}
+
 # Export functions and variables for dependency scripts
 export SCRIPT_DIR PROJECT_ROOT WORK_ROOT OUTPUT_PATH CONFIGURATION TARGET ARCH
 export CMAKE_OPTIONS NUM_PROCS SHARED CLEAN SKIP_BUILD SKIP_UNPACK
@@ -202,9 +269,15 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
     # Change to work directory
     cd "${WORK_ROOT}"
     
-    # Reset NAME so a script that omits it can't inherit the previous one's
-    # value (used below to resolve the license folder).
+    # Reset the declared fields so a script that omits one can't inherit the
+    # previous script's value.
     NAME=""
+    VERSION=""
+    URI=""
+    HASH=""
+    CPE=""
+    SCOPE=""
+    APPLIED_PATCHES=()
 
     # Source the dependency script
     # shellcheck disable=SC1090
@@ -223,9 +296,11 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
     fi
     
     for stage in "${STAGES[@]}"; do
-        if type -t "${stage}" >/dev/null 2>&1; then
+        # Only run stages the script defines; 'patch' and 'install' are also system commands.
+        if [[ "$(type -t "${stage}")" == "function" ]]; then
             log_debug "Running stage: ${stage}"
-            "${stage}" || log_error "Stage ${stage} failed for $(basename "${dep_file}")"
+            # Called directly so errexit applies inside the stage and a failure stops the build.
+            "${stage}"
         fi
     done
     
@@ -240,6 +315,10 @@ for dep_file in "${DEPENDENCY_FILES[@]}"; do
         log_info "Installing license files for $(basename "${license_dir}")"
         mkdir -p "${OUTPUT_PATH}/licenses"
         cp -r "${license_dir}" "${OUTPUT_PATH}/licenses/"
+    fi
+
+    if [[ -n "${URI}" ]]; then
+        write_component
     fi
     
     # Clean up functions

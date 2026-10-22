@@ -3,6 +3,7 @@
 # Dependency information
 NAME='lame'
 VERSION='3.100'
+CPE='lame_project:lame'
 URI='https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz'
 HASH="${SCRIPT_DIR}/deps.ffmpeg/checksums/lame-3.100.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')

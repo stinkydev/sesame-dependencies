@@ -3,6 +3,7 @@
 # Dependency information
 NAME='libvpx'
 VERSION='1.14.1'
+CPE='webmproject:libvpx'
 URI='https://github.com/webmproject/libvpx/archive/v1.14.1.tar.gz'
 HASH="${SCRIPT_DIR}/deps.ffmpeg/checksums/v1.14.1.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')

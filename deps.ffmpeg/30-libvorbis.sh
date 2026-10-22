@@ -3,6 +3,7 @@
 # Dependency information
 NAME='libvorbis'
 VERSION='1.3.7'
+CPE='xiph.org:libvorbis'
 URI='https://github.com/xiph/vorbis/releases/download/v1.3.7/libvorbis-1.3.7.tar.xz'
 HASH="${SCRIPT_DIR}/deps.ffmpeg/checksums/libvorbis-1.3.7.tar.xz.sha256"
 TARGETS=('x86_64' 'aarch64')

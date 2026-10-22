@@ -18,6 +18,8 @@ The following tools are required:
 - make or ninja
 - gcc/g++ or clang
 - Standard build tools (pkg-config, autoconf, automake, libtool, etc.)
+- jq
+- X11 development headers for GLFW (libx11-dev, libxcursor-dev, libxi-dev, libxinerama-dev, libxrandr-dev)
 
 ### Building
 
@@ -84,6 +86,16 @@ FFmpeg for Windows can be built via the `Build-FFMpeg.ps1` PowerShell script (Po
 ```powershell
 ./Build-FFMpeg.ps1
 ```
+
+## Component inventory
+
+Every package carries `share/sesame-deps/components/<name>.json`, one CycloneDX component per bundled
+dependency with its version, source, checksum or git commit, patches and CPE. Downstream builds merge
+these into the product SBOM for vulnerability scanning.
+
+Each dependency script declares its CPE vendor and product next to its version (`$Cpe` in PowerShell,
+`CPE` in Bash), for example `openssl:openssl`. Look it up in the NVD CPE dictionary; leave it out for
+dependencies NVD does not track.
 
 ## Licensing
 
