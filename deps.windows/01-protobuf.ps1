@@ -143,6 +143,9 @@ function Install-ProtocGenDoc {
         
         Copy-Item -Path "protoc-gen-doc.exe" -Destination $BinDir -Force
         Log-Information "Installed protoc-gen-doc.exe to ${BinDir}"
+
+        Write-Component -Name 'protoc-gen-doc' -Version $ProtocGenDocVersion -Uri $ProtocGenDocUri `
+            -Hash $ProtocGenDocHash -Scope 'excluded'
     } else {
         Log-Warning "Checksum file not found for protoc-gen-doc, skipping installation"
     }

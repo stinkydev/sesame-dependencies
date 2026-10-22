@@ -123,6 +123,12 @@ install_protoc_gen_doc() {
     cp -f protoc-gen-doc "${bin_dir}/"
     chmod +x "${bin_dir}/protoc-gen-doc"
     log_info "Installed protoc-gen-doc to ${bin_dir}"
+
+    (
+        NAME='protoc-gen-doc' VERSION="${PROTOC_GEN_DOC_VERSION}" URI="${uri}" HASH="${hash}" CPE='' SCOPE='excluded'
+        APPLIED_PATCHES=()
+        write_component
+    )
 }
 
 fixup() {

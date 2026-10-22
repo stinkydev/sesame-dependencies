@@ -59,9 +59,8 @@ patch() {
                     continue
                 fi
                 
-                # Apply patch, -N skips if already applied, -f forces no prompts, -r /dev/null rejects to /dev/null
                 log_info "Applying patch: ${patch_name}"
-                /usr/bin/patch -p1 -N -f -r /dev/null < "${patch_file}" >/dev/null 2>&1 || log_debug "Patch ${patch_name} skipped (already applied or failed)"
+                apply_patch "${patch_file}" || log_warning "Patch ${patch_name} did not apply"
             fi
         done
     fi
