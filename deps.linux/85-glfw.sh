@@ -32,6 +32,8 @@ configure() {
 
     local options=(
         "${CMAKE_OPTIONS[@]}"
+        # fixup() edits lib/cmake/glfw3; keep GNUInstallDirs from choosing lib64.
+        "-DCMAKE_INSTALL_LIBDIR=lib"
         "-DBUILD_SHARED_LIBS:BOOL=${shared_libs}"
         "-DGLFW_BUILD_DOCS:BOOL=OFF"
         "-DGLFW_BUILD_EXAMPLES:BOOL=OFF"
