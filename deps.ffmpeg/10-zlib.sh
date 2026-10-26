@@ -2,10 +2,10 @@
 
 # Dependency information
 NAME='zlib'
-VERSION='1.3.1'
+VERSION='1.3.2'
 CPE='zlib:zlib'
 URI='https://github.com/madler/zlib.git'
-HASH='51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf'
+HASH='da607da739fa6047df13e66a2af6b8bec7c2a498'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {

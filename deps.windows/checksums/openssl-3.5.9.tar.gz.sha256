@@ -7,8 +7,8 @@
     <ToString>Microsoft.PowerShell.Commands.FileHashInfo</ToString>
     <Props>
       <S N="Algorithm">SHA256</S>
-      <S N="Hash">FC466A1E638E635D6C66363BDF3F38555B81B0141D0B06BA45B49CCCA327436D</S>
-      <S N="Path">lpng1643.zip</S>
+      <S N="Hash">603F5602E2EEF00D77FBD429D34DCD5822BB301757A1BC9CDB24C670F1EB859A</S>
+      <S N="Path">openssl-3.5.9.tar.gz</S>
     </Props>
   </Obj>
 </Objs>

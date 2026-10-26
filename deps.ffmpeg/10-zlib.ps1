@@ -1,14 +1,10 @@
 param(
     [string] $Name = 'zlib',
-    [string] $Version = '1.3.1',
+    [string] $Version = '1.3.2',
     [string] $Cpe = 'zlib:zlib',
     [string] $Uri = 'https://github.com/madler/zlib.git',
-    [string] $Hash = "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf",
+    [string] $Hash = "da607da739fa6047df13e66a2af6b8bec7c2a498",
     [array] $Patches = @(
-        @{
-            PatchFile = "${PSScriptRoot}/patches/zlib/0001-fix-unistd-detection.patch"
-            HashSum = "2114ff9ebfc79765019353b06915a09f4dc4802ce722d2df6e640a59666dd875"
-        }
     ),
     [array] $Targets = @('x64')
 )
@@ -79,4 +75,14 @@ function Install {
     }
 
     Invoke-External cmake @Options
+}
+
+function Fixup {
+    Log-Information "Fixup (${Target})"
+
+    # zlib 1.3.2 names its MSVC libraries z.lib / zs.lib, but FFmpeg's msvc toolchain maps -lz to zlib.lib
+    # and the FFmpeg package keeps zlib.lib / zlibstatic.lib.
+    $LibPath = "$($script:ConfigData.OutputPath)/lib"
+    Move-Item -Force -Path "${LibPath}/z.lib" -Destination "${LibPath}/zlib.lib"
+    Move-Item -Force -Path "${LibPath}/zs.lib" -Destination "${LibPath}/zlibstatic.lib"
 }

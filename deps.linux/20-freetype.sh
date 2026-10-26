@@ -2,10 +2,10 @@
 
 # Dependency information
 NAME='freetype'
-VERSION='2.13.3'
+VERSION='2.15.0'
 CPE='freetype:freetype'
 URI='https://github.com/freetype/freetype.git'
-HASH='42608f77f20749dd6ddc9e0536788eaad70ea4b5'
+HASH='37515cf56ba3349656049edbed89ffc6f6466f2d'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {

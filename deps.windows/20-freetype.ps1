@@ -1,9 +1,9 @@
 param(
     [string] $Name = 'freetype',
-    [string] $Version = '2.13.3',
+    [string] $Version = '2.15.0',
     [string] $Cpe = 'freetype:freetype',
     [string] $Uri = 'https://github.com/freetype/freetype.git',
-    [string] $Hash = '42608f77f20749dd6ddc9e0536788eaad70ea4b5',
+    [string] $Hash = '37515cf56ba3349656049edbed89ffc6f6466f2d',
     [array] $Targets = @('x64')
 )
 
