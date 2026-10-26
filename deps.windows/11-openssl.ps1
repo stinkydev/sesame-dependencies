@@ -34,7 +34,8 @@ function Clean {
 function Invoke-OpenSSLBuild {
     param([string] $BuildCommand)
 
-    $MsysRoot = Split-Path -Parent (Split-Path -Parent (Get-Command pacman.exe).Source)
+    # pacman.exe lives in <msys root>\usr\bin
+    $MsysRoot = (Get-Item (Get-Command pacman.exe).Source).Directory.Parent.Parent.FullName
 
     $Params = @{
         BasePath = (Get-Location | Convert-Path)
