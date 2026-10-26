@@ -1,9 +1,9 @@
 param(
     [string] $Name = 'FFmpeg',
-    [string] $Version = '7.1',
+    [string] $Version = '9.0.2',
     [string] $Cpe = 'ffmpeg:ffmpeg',
     [string] $Uri = 'https://github.com/FFmpeg/FFmpeg.git',
-    [string] $Hash = "b08d7969c550a804a59511c7b83f2dd8cc0499b8",
+    [string] $Hash = "946fcce07b6dcd0331c8cc609192aeff5e1924f8",
     [array] $Patches = @(
     ),
     [array] $Targets = @('x64')
@@ -74,7 +74,6 @@ function Configure {
         '--disable-indev=jack'
         '--disable-sdl2'
         '--disable-doc'
-        '--disable-postproc'
         '--disable-programs'
         '--disable-hwaccels'
         '--disable-amf'

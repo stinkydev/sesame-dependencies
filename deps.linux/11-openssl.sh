@@ -2,13 +2,12 @@
 
 # Dependency information
 NAME='openssl'
-VERSION='1.1.1w'
+VERSION='3.5.9'
 CPE='openssl:openssl'
-URI='https://github.com/openssl/openssl/archive/refs/tags/OpenSSL_1_1_1w.tar.gz'
-HASH="${SCRIPT_DIR}/deps.linux/checksums/OpenSSL_1_1_1w.tar.gz.sha256"
+URI='https://github.com/openssl/openssl/releases/download/openssl-3.5.9/openssl-3.5.9.tar.gz'
+HASH="${SCRIPT_DIR}/deps.linux/checksums/openssl-3.5.9.tar.gz.sha256"
 TARGETS=('x86_64' 'aarch64')
-# Note: GitHub archive extracts to 'openssl-OpenSSL_1_1_1w' (not 'openssl-1.1.1w')
-EXTRACTED_DIR='openssl-OpenSSL_1_1_1w'
+EXTRACTED_DIR='openssl-3.5.9'
 
 setup() {
     log_info "Setup ${NAME} (${TARGET})"
@@ -38,8 +37,10 @@ configure() {
     local options=(
         "--prefix=${OUTPUT_PATH}"
         "--openssldir=${OUTPUT_PATH}/ssl"
+        "--libdir=lib"
         "no-shared"
         "no-tests"
+        "no-docs"
     )
     
     ./config "${options[@]}"

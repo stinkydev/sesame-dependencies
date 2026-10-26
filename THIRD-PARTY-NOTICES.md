@@ -16,26 +16,25 @@ the binaries).
 
 | Library | Version | License | Notes |
 |---|---|---|---|
-| [FFmpeg](https://ffmpeg.org/) | 7.1 | LGPL v2.1+ | Built **without** `--enable-gpl` and **without** `--enable-version3`. See LGPL obligations below. |
+| [FFmpeg](https://ffmpeg.org/) | 9.0.2 | LGPL v2.1+ | Built **without** `--enable-gpl` and **without** `--enable-version3`. See LGPL obligations below. |
 | [LAME](https://lame.sourceforge.io/) | 3.100 | LGPL v2+ | See LGPL obligations below. |
 | [libogg](https://xiph.org/ogg/) | upstream | BSD-3-Clause | Xiph.Org Foundation. |
 | [libvorbis](https://xiph.org/vorbis/) | upstream | BSD-3-Clause | Xiph.Org Foundation. |
 | [libvpx](https://chromium.googlesource.com/webm/libvpx) | upstream | BSD-3-Clause | Google / WebM project. Includes `PATENTS` grant. |
 | [dav1d](https://code.videolan.org/videolan/dav1d) | 1.5.1 | BSD-2-Clause | VideoLAN. AV1 software decoder. |
 | [Opus](https://opus-codec.org/) | upstream | BSD-3-Clause | Xiph.Org Foundation, Microsoft, Skype, Octasic, Jean-Marc Valin et al. |
-| [libpng](http://www.libpng.org/pub/png/libpng.html) | upstream | libpng (PNG Reference Library License v2) | |
-| [zlib](https://www.zlib.net/) | 1.3.1 | zlib license | |
+| [zlib](https://www.zlib.net/) | 1.3.2 | zlib license | |
 
 ## General dependencies (built by `build-dependencies.sh` / `Build-Dependencies.ps1`)
 
 | Library | Version | License | Notes |
 |---|---|---|---|
 | [Protocol Buffers](https://protobuf.dev/) | 3.21.12 | BSD-3-Clause | Google. |
-| [SRT](https://github.com/Haivision/srt) | 1.5.4 | MPL 2.0 | If you modify any SRT source file, you must publish that modified file's source. |
+| [SRT](https://github.com/Haivision/srt) | 1.5.7 | MPL 2.0 | If you modify any SRT source file, you must publish that modified file's source. |
 | [moq-cpp](https://github.com/stinkydev/moq-cpp) | v0.0.13 | MIT (+ bundled Rust crates) | Stinky Computing AB. Statically links its Rust crate tree; full upstream-generated attribution (`THIRD-PARTY-NOTICES.txt` / `THIRD_PARTY_LICENSES.md`) is harvested into `licenses/moq-cpp/` at build time. |
 | [Vulkan SDK](https://vulkan.lunarg.com/) | 1.3.275.0 | Apache 2.0 (loader) | The SDK bundles many components under several licenses (Apache 2.0, MIT, BSD). The bundled `LICENSE.txt` enumerates them. |
-| [OpenSSL](https://www.openssl.org/) | 1.1.1w | OpenSSL License **and** original SSLeay License (dual) | Both notices must be reproduced. |
-| [FreeType](https://freetype.org/) | upstream | FreeType License (BSD-style w/ credit clause) **or** GPLv2 — pick FTL | Requires the acknowledgement "Portions of this software are copyright © `<year>` The FreeType Project (www.freetype.org). All rights reserved." in product documentation. |
+| [OpenSSL](https://www.openssl.org/) | 3.5.9 | Apache 2.0 | Built from source. |
+| [FreeType](https://freetype.org/) | 2.15.0 | FreeType License (BSD-style w/ credit clause) **or** GPLv2 — pick FTL | Requires the acknowledgement "Portions of this software are copyright © `<year>` The FreeType Project (www.freetype.org). All rights reserved." in product documentation. |
 | [Asio](https://think-async.com/Asio/) | upstream | Boost Software License 1.0 | Header-only. |
 | [nlohmann/json](https://github.com/nlohmann/json) | upstream | MIT | |
 | [WebSocket++](https://github.com/zaphoyd/websocketpp) | upstream | BSD-3-Clause | |
@@ -67,17 +66,11 @@ them, you must:
 
 ## Other non-obvious obligations
 
-- **libpng** — include the libpng license and credit ("This software uses
-  libpng, copyright © `<years>` Contributing Authors.") in product
-  documentation.
 - **FreeType** — the FTL acknowledgement above must appear in any printed
   or on-screen documentation.
 - **libvpx** — ship the `PATENTS` file alongside the license; the patent
   grant terminates if the user initiates patent litigation against the
   project.
-- **OpenSSL 1.1.x** — both the OpenSSL License *and* the original SSLeay
-  License must be reproduced (the single `LICENSE` file in
-  `licenses/openssl/` contains both).
 - **SRT (MPL 2.0)** — file-level copyleft. You may statically link SRT
   into a closed-source product, but if you modify any SRT source file
   you must publish that file's source.
@@ -89,9 +82,8 @@ A minimal "About" / "Open Source Licenses" entry might read:
 > This product includes software developed by the FFmpeg project
 > (LGPLv2.1+), the LAME project (LGPLv2+), the Xiph.Org Foundation
 > (Opus, Vorbis, Ogg — BSD), Google / WebM (libvpx — BSD),
-> the libpng Authors, the zlib Authors (Jean-loup Gailly, Mark Adler),
-> the OpenSSL Project and Eric A. Young (OpenSSL 1.1 — dual OpenSSL /
-> SSLeay license), the Protocol Buffers project (Google — BSD),
+> the zlib Authors (Jean-loup Gailly, Mark Adler),
+> the OpenSSL Project (OpenSSL — Apache 2.0), the Protocol Buffers project (Google — BSD),
 > the SRT Alliance / Haivision (SRT — MPL 2.0), Khronos / LunarG
 > (Vulkan SDK — Apache 2.0), the FreeType Project (FTL), Christopher
 > M. Kohlhoff (Asio — Boost 1.0), Niels Lohmann (nlohmann/json — MIT),

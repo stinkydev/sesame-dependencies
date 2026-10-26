@@ -1,9 +1,9 @@
 param(
     [string] $Name = 'srt',
-    [string] $Version = '1.5.4',
+    [string] $Version = '1.5.7',
     [string] $Cpe = 'srtalliance:secure_reliable_transport',
-    [string] $Uri = 'https://github.com/Haivision/srt/archive/refs/tags/v1.5.4.zip',
-    [string] $Hash = "${PSScriptRoot}/checksums/v1.5.4.zip.sha256",
+    [string] $Uri = 'https://github.com/Haivision/srt/archive/refs/tags/v1.5.7.zip',
+    [string] $Hash = "${PSScriptRoot}/checksums/v1.5.7.zip.sha256",
     [array] $Targets = @('x64', 'arm64'),
     [switch] $ForceShared = $true,
     [array] $Patches = @(

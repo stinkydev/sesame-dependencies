@@ -2,10 +2,10 @@
 
 # Dependency information
 NAME='FFmpeg'
-VERSION='7.1'
+VERSION='9.0.2'
 CPE='ffmpeg:ffmpeg'
 URI='https://github.com/FFmpeg/FFmpeg.git'
-HASH='b08d7969c550a804a59511c7b83f2dd8cc0499b8'
+HASH='946fcce07b6dcd0331c8cc609192aeff5e1924f8'
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
@@ -92,7 +92,6 @@ configure() {
         "--enable-shared"
         "--disable-static"
         "--disable-doc"
-        "--disable-postproc"
     )
     
     # Check for optional codec support
@@ -137,7 +136,7 @@ fixup() {
     
     # Strip symbols from shared libraries in Release mode
     if [[ "${CONFIGURATION}" == "Release" || "${CONFIGURATION}" == "MinSizeRel" ]]; then
-        local so_files=("${OUTPUT_PATH}"/lib/lib{sw,av,postproc}*.so.*)
+        local so_files=("${OUTPUT_PATH}"/lib/lib{sw,av}*.so.*)
         if [[ -n "${so_files}" ]]; then
             strip -x "${so_files[@]}" 2>/dev/null || true
         fi

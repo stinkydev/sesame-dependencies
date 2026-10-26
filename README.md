@@ -44,7 +44,7 @@ CONFIGURATION=Debug SHARED=true ./build-dependencies.sh
 ## FFmpeg
 
 This project builds FFmpeg under the **LGPL v2.1+ only**. GPL-licensed components
-(e.g. libx264, libx265, libpostproc) are intentionally excluded so that the
+(e.g. libx264, libx265) are intentionally excluded so that the
 resulting binaries can be distributed under the LGPL. Do not add
 `--enable-gpl`, `--enable-version3`, or any GPL-only external library to the
 configure flags.
@@ -69,7 +69,7 @@ sudo apt-get install -y build-essential cmake meson ninja-build nasm yasm pkg-co
 ```
 
 The script will:
-1. Build all FFmpeg dependencies from source (libvpx, dav1d, opus, vorbis, ogg, lame, zlib, libpng)
+1. Build all FFmpeg dependencies from source (libvpx, dav1d, opus, vorbis, ogg, lame, zlib)
 2. Build FFmpeg with the following features (LGPL v2.1+ only):
    - VP8/VP9 (libvpx, BSD)
    - AV1 decode (dav1d, BSD)
@@ -77,7 +77,6 @@ The script will:
    - Opus (libopus, BSD)
    - Vorbis (libvorbis, BSD)
    - Shared libraries
-   - `libpostproc` is disabled (GPL-only)
 
 ### Windows
 

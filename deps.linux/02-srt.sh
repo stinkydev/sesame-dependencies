@@ -2,10 +2,10 @@
 
 # Dependency information
 NAME='srt'
-VERSION='1.5.4'
+VERSION='1.5.7'
 CPE='srtalliance:secure_reliable_transport'
-URI='https://github.com/Haivision/srt/archive/refs/tags/v1.5.4.zip'
-HASH="${SCRIPT_DIR}/deps.linux/checksums/v1.5.4.zip.sha256"
+URI='https://github.com/Haivision/srt/archive/refs/tags/v1.5.7.zip'
+HASH="${SCRIPT_DIR}/deps.linux/checksums/v1.5.7.zip.sha256"
 TARGETS=('x86_64' 'aarch64')
 
 setup() {
