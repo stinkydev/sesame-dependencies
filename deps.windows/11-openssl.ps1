@@ -11,6 +11,7 @@ param(
 
 function Setup {
     Setup-Dependency -Uri $Uri -Hash $Hash -DestinationPath .
+    Invoke-External tar -xf "${Name}-${Version}.tar"
 
     if ( ! ( $SkipAll -or $SkipDeps ) ) {
         Invoke-External pacman.exe -S --noconfirm --needed --noprogressbar mingw-w64-x86_64-nasm

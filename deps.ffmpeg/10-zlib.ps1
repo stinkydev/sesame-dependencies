@@ -76,3 +76,13 @@ function Install {
 
     Invoke-External cmake @Options
 }
+
+function Fixup {
+    Log-Information "Fixup (${Target})"
+
+    # zlib 1.3.2 names its MSVC libraries z.lib / zs.lib, but FFmpeg's msvc toolchain maps -lz to zlib.lib
+    # and the FFmpeg package keeps zlib.lib / zlibstatic.lib.
+    $LibPath = "$($script:ConfigData.OutputPath)/lib"
+    Move-Item -Force -Path "${LibPath}/z.lib" -Destination "${LibPath}/zlib.lib"
+    Move-Item -Force -Path "${LibPath}/zs.lib" -Destination "${LibPath}/zlibstatic.lib"
+}
