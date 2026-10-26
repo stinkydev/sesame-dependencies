@@ -1,0 +1,48 @@
+# Third-Party Notices
+
+Applications that ship binaries from this **sesame-dependencies** package
+(`{{package}}`) include the third-party software listed below. The full
+license text of each component is installed under `licenses/<component>/`.
+
+Downstream applications must reproduce these notices and license texts in
+their own distribution, for example in an "Open Source Licenses" screen or in
+a file shipped alongside the binaries.
+
+This file is generated from the package's component records
+(`share/sesame-deps/components/*.json`) and `licenses/components.json` in the
+sesame-dependencies repository. Do not edit it by hand.
+
+## Components
+
+{{components}}
+
+## LGPL obligations (FFmpeg, LAME)
+
+FFmpeg and LAME are distributed under the **GNU Lesser General Public
+License, version 2.1 or later**. When you ship an application that uses
+them, you must:
+
+1. **Link dynamically.** This package builds FFmpeg shared
+   (`--enable-shared --disable-static`). If you ever statically link an LGPL
+   library, you must additionally provide the object files of your
+   application so users can re-link against a modified version of the
+   library.
+2. **Bundle the LGPL text** with your application (`licenses/FFmpeg/`).
+3. **Display an attribution notice**, for example in an About / Credits
+   screen: "This software uses libraries from the FFmpeg project under the
+   LGPLv2.1, and from the LAME project under the LGPLv2.1+."
+4. **Document modifications.** The patches applied to each component are
+   listed in its component record (`pedigree.patches`); the modified source
+   must be made available on request.
+5. **Do not strip symbol information** beyond what the package already does.
+   Users must be able to re-link.
+
+## Component-specific obligations
+
+{{notices}}
+
+## Attribution
+
+A minimal "About" / "Open Source Licenses" entry might read:
+
+> {{attribution}}

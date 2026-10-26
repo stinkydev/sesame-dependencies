@@ -295,6 +295,12 @@ jobs:
           : Get Metadata
           echo "version=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
 
+      # In a subfolder so the repository's files stay out of the artifact globs below.
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: repo
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
 
@@ -324,6 +330,9 @@ jobs:
                 esac
               fi
             done
+
+            # Generated after merging so the FFmpeg and dependency components share one notices file.
+            pwsh -NoProfile -Command ". '${GITHUB_WORKSPACE}/repo/utils.pwsh/Write-Notices.ps1'; Write-Notices -PackagePath '${_temp}'"
 
             zip -r windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip -- *
             mv windows-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.zip ${GITHUB_WORKSPACE}
@@ -359,6 +368,8 @@ jobs:
               fi
             done
             
+            pwsh -NoProfile -Command ". '${GITHUB_WORKSPACE}/repo/utils.pwsh/Write-Notices.ps1'; Write-Notices -PackagePath '${_temp}'"
+
             # Create combined archive
             tar -czf linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz *
             mv linux-${config}-deps-${{ steps.metadata.outputs.version }}-${arch}.tar.gz ${GITHUB_WORKSPACE}

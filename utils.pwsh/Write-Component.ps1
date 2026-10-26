@@ -28,15 +28,25 @@ function Write-Component {
 
     $CleanVersion = $Version -replace '^v(?=\d)', ''
 
+    # License, description and website live in licenses/components.json, shared with build-dependencies.sh.
+    $Metadata = (Get-Content -Raw "$PSScriptRoot/../licenses/components.json" | ConvertFrom-Json -AsHashtable)[$Name.ToLower()]
+
+    if ( ! $Metadata ) {
+        throw "No entry for $($Name.ToLower()) in licenses/components.json."
+    }
+
     $Component = [ordered]@{
         type = 'library'
         name = $Name
         version = $CleanVersion
+        description = $Metadata.description
     }
 
     if ( $Scope -ne '' ) {
         $Component.scope = $Scope
     }
+
+    $Component.licenses = @([ordered]@{ license = [ordered]@{ id = $Metadata.license } })
 
     # A git source is identified by its pinned commit; the display version can name something else (stb).
     $PurlVersion = if ( $Hash -match '^[0-9a-f]{40}$' ) { $Hash } else { $CleanVersion }
@@ -79,6 +89,9 @@ function Write-Component {
             $Component.hashes = @([ordered]@{ alg = 'SHA-256'; content = $Sha256.ToLower() })
         }
     }
+
+    $Component.externalReferences = @($Component.externalReferences | Where-Object { $_ }) +
+        @([ordered]@{ type = 'website'; url = $Metadata.website })
 
     if ( $Patches.Count -gt 0 ) {
         $RepoRoot = (Resolve-Path "$PSScriptRoot/..").Path
