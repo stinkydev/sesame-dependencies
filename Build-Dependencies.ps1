@@ -156,6 +156,9 @@ function Package-Dependencies {
 
     Get-Date -Format "yyyy-MM-dd" | Set-Content -Path share/sesame-deps/VERSION
 
+    # Release packaging regenerates this once the FFmpeg and dependency packages are merged.
+    Write-Notices -PackagePath .
+
     Log-Information "Package dependencies"
 
     $Params = @{

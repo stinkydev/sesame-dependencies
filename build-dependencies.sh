@@ -189,7 +189,13 @@ apply_patch() {
 write_component() {
     local version="${VERSION#v}"
     local github_re='^https://github\.com/([^/]+)/([^/]+)'
-    local purl sha256="" purl_version="${version}" patch_urls="[]"
+    local purl sha256="" purl_version="${version}" patch_urls="[]" metadata
+
+    # License, description and website live in licenses/components.json, shared with Write-Component.ps1.
+    metadata=$(jq -e --arg n "${NAME,,}" '.[$n]' "${SCRIPT_DIR}/licenses/components.json") || {
+        log_error "No entry for ${NAME,,} in licenses/components.json"
+        return 1
+    }
 
     # A git source is identified by its pinned commit; the display version can name something else (stb).
     if [[ "${HASH}" =~ ^[0-9a-f]{40}$ ]]; then
@@ -219,14 +225,16 @@ write_component() {
     jq -n \
         --arg name "${NAME}" --arg version "${version}" --arg purl "${purl}" --arg cpe "${CPE}" \
         --arg uri "${URI}" --arg hash "${HASH}" --arg sha256 "${sha256}" --arg platform "linux-${TARGET}" \
-        --arg scope "${SCOPE}" --argjson patches "${patch_urls}" '
+        --arg scope "${SCOPE}" --argjson patches "${patch_urls}" --argjson meta "${metadata}" '
         ($hash | test("^[0-9a-f]{40}$")) as $git
-        | { type: "library", name: $name, version: $version }
+        | { type: "library", name: $name, version: $version, description: $meta.description }
         + (if $scope != "" then { scope: $scope } else {} end)
+        + { licenses: [{ license: { id: $meta.license } }] }
         + { purl: $purl }
         + (if $cpe != "" then { cpe: "cpe:2.3:a:\($cpe):\($version):*:*:*:*:*:*:*" } else {} end)
         + (if $sha256 != "" then { hashes: [{ alg: "SHA-256", content: $sha256 }] } else {} end)
-        + { externalReferences: [{ type: (if $git then "vcs" else "distribution" end), url: $uri }] }
+        + { externalReferences: [{ type: (if $git then "vcs" else "distribution" end), url: $uri },
+                                 { type: "website", url: $meta.website }] }
         + (if ($patches | length) > 0
            then { pedigree: { patches: [$patches[] | { type: "unofficial", diff: { url: . } }] } }
            else {} end)
@@ -347,7 +355,10 @@ if [[ -z "${DEPENDENCIES}" ]] && [[ -d "${OUTPUT_PATH}" ]]; then
     # Create version file
     mkdir -p share/sesame-deps
     echo "${CURRENT_DATE}" > share/sesame-deps/VERSION
-    
+
+    # Release packaging regenerates this once the FFmpeg and dependency packages are merged.
+    pwsh -NoProfile -Command ". '${SCRIPT_DIR}/utils.pwsh/Write-Notices.ps1'; Write-Notices -PackagePath '${OUTPUT_PATH}'"
+
     # Create archive
     log_info "Creating archive ${ARCHIVE_NAME}"
     tar -czf "${ARCHIVE_NAME}" ./*

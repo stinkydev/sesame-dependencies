@@ -1,0 +1,160 @@
+{
+  "asio": {
+    "license": "BSL-1.0",
+    "description": "Asio C++ networking (standalone)",
+    "website": "https://think-async.com/Asio/",
+    "holder": "Christopher M. Kohlhoff"
+  },
+  "audio-plugins": {
+    "license": "MIT",
+    "description": "Audio plugin host + bundled CLAP SDK",
+    "website": "https://github.com/stinkydev/audio-plugins",
+    "holder": "Stinky Computing AB",
+    "notice": "Compiles in the CLAP SDK (MIT); its attribution is harvested into `licenses/audio-plugins/` at build time."
+  },
+  "dav1d": {
+    "license": "BSD-2-Clause",
+    "description": "AV1 decoder (used via FFmpeg)",
+    "website": "https://code.videolan.org/videolan/dav1d",
+    "holder": "VideoLAN"
+  },
+  "ffmpeg": {
+    "license": "LGPL-2.1-or-later",
+    "description": "Multimedia framework (avcodec/avformat/avutil/swscale/swresample)",
+    "website": "https://ffmpeg.org/",
+    "holder": "the FFmpeg project",
+    "notice": "Built without `--enable-gpl` and without `--enable-version3`, as shared libraries. See the LGPL obligations above."
+  },
+  "freetype": {
+    "license": "FTL",
+    "description": "Font rendering library",
+    "website": "https://freetype.org/",
+    "holder": "the FreeType Project",
+    "notice": "Product documentation must include: \"Portions of this software are copyright © The FreeType Project (www.freetype.org). All rights reserved.\""
+  },
+  "glfw": {
+    "license": "Zlib",
+    "description": "OpenGL/Vulkan windowing library",
+    "website": "https://www.glfw.org/",
+    "holder": "the GLFW Authors"
+  },
+  "glm": {
+    "license": "MIT",
+    "description": "OpenGL Mathematics header library",
+    "website": "https://github.com/g-truc/glm",
+    "holder": "G-Truc Creation"
+  },
+  "lame": {
+    "license": "LGPL-2.0-or-later",
+    "description": "MP3 audio encoder (used via FFmpeg)",
+    "website": "https://lame.sourceforge.io/",
+    "holder": "the LAME project",
+    "notice": "Linked into the FFmpeg shared libraries. See the LGPL obligations above."
+  },
+  "libogg": {
+    "license": "BSD-3-Clause",
+    "description": "Ogg container library",
+    "website": "https://xiph.org/ogg/",
+    "holder": "the Xiph.Org Foundation"
+  },
+  "libvorbis": {
+    "license": "BSD-3-Clause",
+    "description": "Vorbis audio codec",
+    "website": "https://xiph.org/vorbis/",
+    "holder": "the Xiph.Org Foundation"
+  },
+  "libvpx": {
+    "license": "BSD-3-Clause",
+    "description": "VP8/VP9 video codec",
+    "website": "https://chromium.googlesource.com/webm/libvpx",
+    "holder": "Google / WebM",
+    "notice": "Ship the `PATENTS` file from `licenses/libvpx/`; the patent grant terminates if the licensee initiates patent litigation against the project."
+  },
+  "moq-cpp": {
+    "license": "MIT",
+    "description": "Media over QUIC transport",
+    "website": "https://github.com/stinkydev/moq-cpp",
+    "holder": "Stinky Computing AB",
+    "notice": "Statically links its Rust crate tree; the upstream-generated crate attributions are harvested into `licenses/moq-cpp/` at build time."
+  },
+  "nlohmann-json": {
+    "license": "MIT",
+    "description": "JSON for Modern C++",
+    "website": "https://github.com/nlohmann/json",
+    "holder": "Niels Lohmann"
+  },
+  "openssl": {
+    "license": "Apache-2.0",
+    "description": "TLS/crypto library",
+    "website": "https://www.openssl.org/",
+    "holder": "the OpenSSL Project"
+  },
+  "opus": {
+    "license": "BSD-3-Clause",
+    "description": "Opus audio codec",
+    "website": "https://opus-codec.org/",
+    "holder": "the Xiph.Org Foundation"
+  },
+  "protobuf": {
+    "license": "BSD-3-Clause",
+    "description": "Protocol Buffers",
+    "website": "https://protobuf.dev/",
+    "holder": "Google"
+  },
+  "protoc-gen-doc": {
+    "license": "MIT",
+    "description": "Protocol Buffers documentation generator (build-time tool)",
+    "website": "https://github.com/pseudomuto/protoc-gen-doc",
+    "holder": "David Muto"
+  },
+  "srt": {
+    "license": "MPL-2.0",
+    "description": "Secure Reliable Transport",
+    "website": "https://github.com/Haivision/srt",
+    "holder": "the SRT Alliance / Haivision",
+    "notice": "File-level copyleft: SRT may be statically linked into a closed-source product, but the source of any modified SRT file must be published."
+  },
+  "stb": {
+    "license": "MIT",
+    "description": "stb single-file libraries (stb_image, stb_image_write)",
+    "website": "https://github.com/nothings/stb",
+    "holder": "Sean Barrett"
+  },
+  "tweeny": {
+    "license": "MIT",
+    "description": "Inbetweening/easing C++ library",
+    "website": "https://github.com/mobius3/tweeny",
+    "holder": "Leonardo Guilherme de Freitas"
+  },
+  "vectorclass": {
+    "license": "Apache-2.0",
+    "description": "Agner Fog Vector Class Library",
+    "website": "https://github.com/vectorclass/version2",
+    "holder": "Agner Fog"
+  },
+  "vma": {
+    "license": "MIT",
+    "description": "Vulkan Memory Allocator",
+    "website": "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator",
+    "holder": "Advanced Micro Devices, Inc."
+  },
+  "vulkansdk": {
+    "license": "Apache-2.0",
+    "description": "Vulkan SDK loader and components",
+    "website": "https://vulkan.lunarg.com/",
+    "holder": "Khronos / LunarG",
+    "notice": "The SDK bundles components under several licenses (Apache-2.0, MIT, BSD); `licenses/vulkansdk/LICENSE.txt` enumerates them."
+  },
+  "websocketpp": {
+    "license": "BSD-3-Clause",
+    "description": "WebSocket++ header-only library",
+    "website": "https://github.com/zaphoyd/websocketpp",
+    "holder": "Peter Thorson"
+  },
+  "zlib": {
+    "license": "Zlib",
+    "description": "Compression library",
+    "website": "https://www.zlib.net/",
+    "holder": "Jean-loup Gailly and Mark Adler"
+  }
+}
